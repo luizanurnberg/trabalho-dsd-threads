@@ -1,4 +1,9 @@
 package model;
 
-public class Vehicle {
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Vehicle  {
 }
+
+

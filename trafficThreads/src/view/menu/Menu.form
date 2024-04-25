@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="view.menu.Menu">
+  <grid id="27dc6" binding="jpPainel" layout-manager="GridLayoutManager" row-count="16" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="500" height="558"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="33500" class="javax.swing.JLabel" binding="lbMenu">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="20"/>
+          <text value="Menu"/>
+        </properties>
+      </component>
+      <component id="c0b95" class="javax.swing.JLabel" binding="lbNumberVehicles">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Quantidade Total de Veículos"/>
+        </properties>
+      </component>
+      <component id="737fc" class="javax.swing.JTextField" binding="tfNumberVehicles">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+        </properties>
+      </component>
+      <component id="71a8d" class="javax.swing.JLabel" binding="lbNumberSimultaneousVehicles">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Quantidade de Veículos Simultâneos"/>
+        </properties>
+      </component>
+      <component id="dbbda" class="javax.swing.JTextField" binding="tfNumberSimultaneousVehicles">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+        </properties>
+      </component>
+      <component id="c11a6" class="javax.swing.JLabel" binding="lbRangeInsertion">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Intervalo de Inserção dos Veículos"/>
+        </properties>
+      </component>
+      <component id="691ff" class="javax.swing.JTextField" binding="tfRangeInsertion">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+        </properties>
+      </component>
+      <component id="8da9d" class="javax.swing.JLabel" binding="lbGrid">
+        <constraints>
+          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Escolha a Malha"/>
+        </properties>
+      </component>
+      <component id="4799d" class="javax.swing.JRadioButton" binding="rbGrid1">
+        <constraints>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Malha 1"/>
+        </properties>
+      </component>
+      <component id="577d2" class="javax.swing.JRadioButton" binding="rbGrid2">
+        <constraints>
+          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Malha 2"/>
+        </properties>
+      </component>
+      <component id="92d36" class="javax.swing.JRadioButton" binding="rbGrid3">
+        <constraints>
+          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Malha 3"/>
+        </properties>
+      </component>
+      <component id="be03f" class="javax.swing.JLabel" binding="lbMutualExclusion">
+        <constraints>
+          <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Qual Tipo de Exclusão Mútua?"/>
+        </properties>
+      </component>
+      <component id="20509" class="javax.swing.JRadioButton" binding="rbMonitor">
+        <constraints>
+          <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Monitor"/>
+        </properties>
+      </component>
+      <component id="58335" class="javax.swing.JRadioButton" binding="rbSemaphore">
+        <constraints>
+          <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Semáforo"/>
+        </properties>
+      </component>
+      <component id="1bc2c" class="javax.swing.JRadioButton" binding="rbMessageExchange">
+        <constraints>
+          <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Troca de Mensagens"/>
+        </properties>
+      </component>
+      <component id="11754" class="javax.swing.JButton" binding="btnStart">
+        <constraints>
+          <grid row="15" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="JetBrains Mono" size="14"/>
+          <text value="Começar"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+  <buttonGroups>
+    <group name="rbButtonGrid">
+      <member id="4799d"/>
+      <member id="577d2"/>
+      <member id="92d36"/>
+    </group>
+    <group name="rbButtonExclusions">
+      <member id="20509"/>
+      <member id="58335"/>
+    </group>
+  </buttonGroups>
+</form>
