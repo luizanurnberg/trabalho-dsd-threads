@@ -1,8 +1,5 @@
 package view;
 
-import model.Road;
-import model.Rules;
-
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.io.File;
