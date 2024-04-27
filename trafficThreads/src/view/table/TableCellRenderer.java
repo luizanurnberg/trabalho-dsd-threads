@@ -17,23 +17,23 @@ public class TableCellRenderer extends DefaultTableCellRenderer{
 
             switch(roadActual.getType()) {
                 case 1: {
-                    ImageIcon imagem = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon1.getPath())));
-                    super.setIcon(imagem);
+                    ImageIcon image = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon1.getPath())));
+                    super.setIcon(image);
                     break;
                 }
                 case 2: {
-                    ImageIcon imagem = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon2.getPath())));
-                    super.setIcon(imagem);
+                    ImageIcon image = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon2.getPath())));
+                    super.setIcon(image);
                     break;
                 }
                 case 3: {
-                    ImageIcon imagem = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon3.getPath())));
-                    super.setIcon(imagem);
+                    ImageIcon image = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon3.getPath())));
+                    super.setIcon(image);
                     break;
                 }
                 case 4: {
-                    ImageIcon imagem = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon4.getPath())));
-                    super.setIcon(imagem);
+                    ImageIcon image = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon4.getPath())));
+                    super.setIcon(image);
                     break;
                 }
             }
@@ -42,8 +42,8 @@ public class TableCellRenderer extends DefaultTableCellRenderer{
                 super.setIcon(roadActual.getVehicle().getIcon());
             }
             else if(roadActual.isBusy()) {
-                ImageIcon imagem = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon12.getPath())));
-                super.setIcon(imagem);
+                ImageIcon image = new ImageIcon(Objects.requireNonNull(this.getClass().getResource(RoadTranslationConst.icon12.getPath())));
+                super.setIcon(image);
             }
 
 

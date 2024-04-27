@@ -16,7 +16,7 @@ public class RoadItem {
     private RoadItem itemDownRight;
     private RoadItem itemDownLeft;
 
-    private RoadItem itemPosition;
+    private RoadPosition roadPosition;
 
     private boolean isBusy = false;
     private boolean isEntry;
@@ -27,11 +27,11 @@ public class RoadItem {
 
     private Vehicle vehicle;
 
-    public RoadItem(int type, RoadItem itemPosition) {
+    public RoadItem(int type, RoadPosition roadPosition) {
         this.type = type;
         this.isEntry = false;
         this.isExit = false;
-        this.itemPosition = itemPosition;
+        this.roadPosition = roadPosition;
     }
 
     public int getType() {
@@ -58,8 +58,8 @@ public class RoadItem {
         return vehicle;
     }
 
-    public RoadItem getItemPosition() {
-        return itemPosition;
+    public RoadPosition getItemPosition() {
+        return roadPosition;
     }
 
     public RoadItem getItemRight() {
@@ -122,8 +122,8 @@ public class RoadItem {
         this.itemLeft = itemLeft;
     }
 
-    public void setItemPosition(RoadItem itemPosition) {
-        this.itemPosition = itemPosition;
+    public RoadPosition getRoadPosition() {
+        return roadPosition;
     }
 
     public void setItemRight(RoadItem itemRight) {

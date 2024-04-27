@@ -1,6 +1,7 @@
 package model.vehicle;
 
 import controller.Controller;
+import mesh.Mesh;
 import model.road.RoadItem;
 import model.road.RoadWay;
 import model.road.RoadWayBase;
@@ -8,10 +9,12 @@ import model.road.RoadWayBase;
 import javax.swing.*;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Vehicle extends Thread{
 
     private final int speed;
+    private final Mesh mesh;
     private RoadItem roadActual;
     private RoadItem roadAfter;
     private ImageIcon icon;
@@ -19,9 +22,10 @@ public class Vehicle extends Thread{
     private RoadWay roadWay;
 
 
-    public Vehicle(int speed) {
-        this.speed = speed;
+    public Vehicle(Mesh mesh) {
+        this.speed = speedRandom();
         this.roadWay = new RoadWayBase();
+        this.mesh = mesh;
     }
 
     public ImageIcon getIcon() {
@@ -77,6 +81,12 @@ public class Vehicle extends Thread{
                 System.out.println("Erro");
             }
         }
+    }
+
+    private int speedRandom() {
+        Random random = new Random();
+        int add = random.nextInt(250);
+        return 250 + add;
     }
 
     private void removeVehicle() {

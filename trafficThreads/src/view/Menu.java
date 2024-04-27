@@ -1,8 +1,13 @@
 package view;
 
+import controller.Controller;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class Menu extends JFrame{
     private JPanel jpPainel;
@@ -22,6 +27,8 @@ public class Menu extends JFrame{
     private JRadioButton rbSemaphore;
     private JRadioButton rbMessageExchange;
     private JButton btnStart;
+    private ButtonGroup gridGroup;
+    private ButtonGroup exclusionTypeGroup;
 
     public Menu(){
         super.setSize(new Dimension(600, 600));
@@ -30,11 +37,50 @@ public class Menu extends JFrame{
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         super.setVisible(true);
+
+        gridGroup = new ButtonGroup();
+        exclusionTypeGroup = new ButtonGroup();
+
+        gridGroup.add(rbGrid1);
+        gridGroup.add(rbGrid2);
+        gridGroup.add(rbGrid3);
+
+        exclusionTypeGroup.add(rbMonitor);
+        exclusionTypeGroup.add(rbSemaphore);
+        exclusionTypeGroup.add(rbMessageExchange);
+
         btnStart.addActionListener((ActionEvent e) -> {
-            Simulation simulation = new Simulation();
-            simulation.setVisible(true);
-            dispose();
+            if(!validateInputs()) {
+                JOptionPane.showMessageDialog(null,"Campos em branco, favor preencher!");
+            } else {
+
+                String selectedGrid = getSelectedGrid();
+                int exclusionType = getExclusionType();
+                    Controller controller = Controller.getInstance();
+                try {
+                    controller.startSimulation(
+                            getNumberVehicles(),
+                            getNumberSimultaneousVehicles(),
+                            getRangeInsertion(),
+                            selectedGrid,
+                            exclusionType
+                    );
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                Simulation simulation = new Simulation(this);
+                    simulation.setVisible(true);
+                    dispose();
+            }
         });
+    }
+
+    private boolean validateInputs() {
+        if (tfNumberVehicles.getText().equals("") || tfNumberSimultaneousVehicles.getText().equals("") || tfRangeInsertion.getText().equals("")) {
+            return false;
+        }
+        return true;
     }
 
     public String getSelectedGrid() {
@@ -61,5 +107,17 @@ public class Menu extends JFrame{
             return 3;
         }
         return 0;
+    }
+
+    public int getNumberVehicles() {
+        return Integer.parseInt(tfNumberVehicles.getText());
+    }
+
+    public int getNumberSimultaneousVehicles() {
+        return Integer.parseInt(tfNumberSimultaneousVehicles.getText());
+    }
+
+    public int getRangeInsertion() {
+        return Integer.parseInt(tfRangeInsertion.getText());
     }
 }
