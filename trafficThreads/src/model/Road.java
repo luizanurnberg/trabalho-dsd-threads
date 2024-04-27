@@ -1,6 +1,7 @@
 package model;
 
 import constants.RoadTranslationConst;
+import view.TableConstruct;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -63,6 +64,27 @@ public class Road {
 
     public int getColumn() {
         return column;
+    }
+
+    public void setEntryOrExit(TableConstruct meshTable) {
+        this.setEntry((this.isUpperEntry() || this.isBottomEntry(meshTable) || this.isLeftEntry() || this.isRightEntry(meshTable)));
+        this.setExit((this.isUpperExit() || this.isBottomExit(meshTable) || this.isLeftExit() || this.isRightExit(meshTable)));
+    }
+
+    public boolean isBottomEntry(TableConstruct meshTable) {
+        return this.getColumn() + 1 >= meshTable.getLines() && this.getType() == 1;
+    }
+
+    public boolean isBottomExit(TableConstruct meshTable) {
+        return this.getColumn() + 1 >= meshTable.getLines() && this.getType() == 3;
+    }
+
+    public boolean isRightEntry(TableConstruct meshTable) {
+        return this.getLine() + 1 >= meshTable.getColumns() && this.getType() == 4;
+    }
+
+    public boolean isRightExit(TableConstruct meshTable) {
+        return this.getLine() + 1 >= meshTable.getColumns() && this.getType() == 2;
     }
 
     private void setIconDirectoryByType() {

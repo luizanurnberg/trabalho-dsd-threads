@@ -5,14 +5,14 @@ public class Rules {
     private  int numberSimultaneousVehicles;
     private int rangeInsertion;
     private String fileNameGrid;
-    private int exclusionTYpe;
+    private int exclusionType;
 
     public Rules(int numberVehicles, int numberSimultaneousVehicles, int rangeInsertion, String fileNameGrid, int exclusionTYpe) {
         this.numberVehicles = numberVehicles;
         this.numberSimultaneousVehicles = numberSimultaneousVehicles;
         this.rangeInsertion = rangeInsertion;
         this.fileNameGrid = fileNameGrid;
-        this.exclusionTYpe = exclusionTYpe;
+        this.exclusionType = exclusionTYpe;
     }
 
     public int getNumberVehicles() {
@@ -31,8 +31,8 @@ public class Rules {
         return fileNameGrid;
     }
 
-    public int getExclusionTYpe() {
-        return exclusionTYpe;
+    public int getExclusionType() {
+        return exclusionType;
     }
 
 }

@@ -2,11 +2,11 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class Simulation extends JFrame{
-    private JButton btnFInish;
+    private JButton btnFinish;
     private JPanel jpPainel;
+    private JTable tbGrids;
 
     public Simulation(){
         super.setSize(new Dimension(900, 900));

@@ -30,7 +30,7 @@ public class Vehicle extends Thread{
         this.actualRoad = currentRoad;
     }
 
-    public void end() {
+    public void endVehicle() {
         this.ended = true;
         this.interrupt();
     }
@@ -52,7 +52,7 @@ public class Vehicle extends Thread{
             this.getActualRoad().release();
             this.navigationController.removeCarOnMesh(this);
             this.navigationController.updateCell(this.getActualRoad());
-            this.end();
+            this.endVehicle();
         }
     }
 
