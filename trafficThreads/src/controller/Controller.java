@@ -86,6 +86,10 @@ public class Controller implements ControllerObserver {
 
     }
 
+    public synchronized void notifyTableModelChanged() {
+
+    }
+
     @Override
     public RoadItem[][] getTraffic() {
         return new RoadItem[0][];
