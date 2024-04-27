@@ -53,7 +53,7 @@ public class Controller implements ControllerObserver {
         this.vehicles = new ArrayList<Vehicle>();
     }
 
-    public void removeVeiculo(Vehicle car) {
+    public void removeVehicle(Vehicle car) {
         this.vehicles.remove(car);
     }
 
