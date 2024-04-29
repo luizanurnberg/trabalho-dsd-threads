@@ -8,23 +8,19 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="f89f" class="javax.swing.JButton" binding="btnFinish">
+      <component id="f8c5a" class="javax.swing.JButton" binding="btnFinish">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <font name="JetBrains Mono" size="14"/>
-          <text value="Finalizar"/>
+          <text value="Button"/>
         </properties>
       </component>
-      <component id="4f672" class="javax.swing.JTable" binding="tbGrids">
+      <vspacer id="7a73c">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
-      </component>
+      </vspacer>
     </children>
   </grid>
 </form>

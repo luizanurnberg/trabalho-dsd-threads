@@ -1,6 +1,8 @@
 package view;
 
 import controller.Controller;
+import controller.SimulationController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -56,16 +58,19 @@ public class Menu extends JFrame{
 
                 String selectedGrid = getSelectedGrid();
                 int exclusionType = getExclusionType();
+                int numberOfVehicles = getNumberVehicles();
+                int numberOfSimultaneousVehicles = getNumberSimultaneousVehicles();
+                int rangeInsertion = getRangeInsertion();
 
-                Simulation simulation = new Simulation(this);
-                    simulation.setVisible(true);
-                    dispose();
+                SimulationController simulationController = new SimulationController();
+                simulationController.startSimulation(selectedGrid, exclusionType, numberOfVehicles, numberOfSimultaneousVehicles, rangeInsertion);
+
             }
         });
     }
 
     private boolean validateInputs() {
-        if (tfNumberVehicles.getText().equals("") || tfNumberSimultaneousVehicles.getText().equals("") || tfRangeInsertion.getText().equals("")) {
+        if (tfNumberVehicles.getText().isEmpty() || tfNumberSimultaneousVehicles.getText().isEmpty() || tfRangeInsertion.getText().isEmpty()) {
             return false;
         }
         return true;
@@ -73,7 +78,7 @@ public class Menu extends JFrame{
 
     public String getSelectedGrid() {
         if (this.rbGrid1.isSelected()) {
-            return "mesh1.txt";
+            return "/home/luiza/trabalho-dsd-threads/trafficThreads/src/grids/mesh1.txt";
         }
         if (this.rbGrid2.isSelected()) {
             return "mesh2.txt";
