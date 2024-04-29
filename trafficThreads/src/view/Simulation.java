@@ -1,7 +1,6 @@
 package view;
 
 import controller.Controller;
-import view.table.Table;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +8,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Simulation extends JFrame implements ViewObserver{
+public class Simulation extends JFrame{
     private JButton btnFinish;
     private JPanel jpPainel;
     private JTable tbGrids;
@@ -37,20 +36,5 @@ public class Simulation extends JFrame implements ViewObserver{
 //    lbRangeInsertion.setText("Range Insertion: " + rangeInsertion);
 //    lbSelectedGrid.setText("Selected Grid: " + selectedGrid);
 //    lbExclusionType.setText("Exclusion Type: " + exclusionType);
-    }
-
-    @Override
-    public void updateTable() {
-
-    }
-
-    @Override
-    public void updateTableModel(Table table) {
-
-    }
-
-    @Override
-    public void updateButton(Boolean start) {
-
     }
 }

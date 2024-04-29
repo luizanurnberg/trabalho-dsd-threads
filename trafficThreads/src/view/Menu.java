@@ -56,18 +56,6 @@ public class Menu extends JFrame{
 
                 String selectedGrid = getSelectedGrid();
                 int exclusionType = getExclusionType();
-                    Controller controller = Controller.getInstance();
-                try {
-                    controller.startSimulation(
-                            getNumberVehicles(),
-                            getNumberSimultaneousVehicles(),
-                            getRangeInsertion(),
-                            selectedGrid,
-                            exclusionType
-                    );
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
 
                 Simulation simulation = new Simulation(this);
                     simulation.setVisible(true);
