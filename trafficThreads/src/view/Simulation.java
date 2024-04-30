@@ -1,7 +1,11 @@
 package view;
 
+import com.sun.tools.javac.Main;
+import constants.TerrainType;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class Simulation extends JFrame {
     private JPanel jpPainel;
@@ -12,32 +16,30 @@ public class Simulation extends JFrame {
     private int numSimultaneousVehicles;
     private int rangeInsertion;
     private int[][] grid;
-    private Icon[][] icons;
 
-    public Simulation(int[][] grid, Icon[][] icons, int exclusionType, int numVehicles, int numSimultaneousVehicles, int rangeInsertion) {
+    public Simulation(int[][] grid, int exclusionType, int numVehicles, int numSimultaneousVehicles, int rangeInsertion) {
         super("Simulation");
         this.grid = grid;
         this.exclusionType = exclusionType;
         this.numVehicles = numVehicles;
         this.numSimultaneousVehicles = numSimultaneousVehicles;
         this.rangeInsertion = rangeInsertion;
-        this.icons = icons;
 
+        initializeSimulationFrame();
+    }
+
+    private void initializeSimulationFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 900);
         setLocationRelativeTo(null);
         setResizable(false);
 
         jpPainel = new JPanel(new GridLayout(grid.length, grid[0].length));
-        jpPainel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                JLabel label = new JLabel(icons[i][j]);
-                label.setHorizontalAlignment(SwingConstants.CENTER);
-                jpPainel.add(label);
-            }
-        }
+        jpPainel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        jpPainel.setBackground(Color.WHITE);
+
+        plotImagesOnMap(grid,jpPainel);
 
         btnFinish = new JButton("Finalizar");
         JPanel buttonPanel = new JPanel();
@@ -46,6 +48,25 @@ public class Simulation extends JFrame {
         add(jpPainel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
         setVisible(true);
+    }
+
+    private void plotImagesOnMap(int[][] grid, JPanel jpPainel) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                String imagePath = TerrainType.getImagePath(this.grid[i][j]);
+                String relativePath = "icons/" + imagePath;
+
+                ImageIcon icon = new ImageIcon(getResource(relativePath));
+
+                JLabel label = new JLabel(icon);
+                label.setHorizontalAlignment(SwingConstants.CENTER);
+                jpPainel.add(label);
+            }
+        }
+    }
+
+    protected static java.net.URL getResource(String path) {
+        return Simulation.class.getClassLoader().getResource(path);
     }
 }
 

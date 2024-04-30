@@ -1,15 +1,11 @@
 package view;
 
-import controller.Controller;
+import com.sun.tools.javac.Main;
 import controller.SimulationController;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 public class Menu extends JFrame{
     private JPanel jpPainel;
@@ -78,13 +74,13 @@ public class Menu extends JFrame{
 
     public String getSelectedGrid() {
         if (this.rbGrid1.isSelected()) {
-            return "/home/luiza/trabalho-dsd-threads/trafficThreads/src/grids/mesh1.txt";
+            return ("grids/mesh1.txt");
         }
         if (this.rbGrid2.isSelected()) {
-            return "mesh2.txt";
+            return ("grids/mesh2.txt");
         }
         if (this.rbGrid3.isSelected()) {
-            return "mesh3.txt";
+            return ("grids/mesh3.txt");
         }
         return null;
     }
