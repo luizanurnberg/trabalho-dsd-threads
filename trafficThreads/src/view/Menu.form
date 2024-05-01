@@ -36,7 +36,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
-          <text value="100"/>
+          <text value="15"/>
         </properties>
       </component>
       <component id="71a8d" class="javax.swing.JLabel" binding="lbNumberSimultaneousVehicles">
@@ -56,7 +56,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
-          <text value="15"/>
+          <text value="3"/>
         </properties>
       </component>
       <component id="c11a6" class="javax.swing.JLabel" binding="lbRangeInsertion">
@@ -76,7 +76,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
-          <text value="3"/>
+          <text value="5"/>
         </properties>
       </component>
       <component id="8da9d" class="javax.swing.JLabel" binding="lbGrid">

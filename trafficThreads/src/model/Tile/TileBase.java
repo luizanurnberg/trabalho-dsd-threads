@@ -43,7 +43,7 @@ public class TileBase {
     }
 
     protected void setTileCurrentImage() {
-        if(this.currentVehicle == null) {
+        if (this.currentVehicle == null) {
             String imagePath = this.getImagePath();
             String relativePath = "icons/" + imagePath;
 
@@ -52,7 +52,7 @@ public class TileBase {
             this.tileLabel.setIcon(icon);
         }
 
-        if(this.currentVehicle != null) {
+        if (this.currentVehicle != null) {
             String imagePath = this.currentVehicle.getImagePath();
             String relativePath = "icons/" + imagePath;
 
@@ -67,22 +67,22 @@ public class TileBase {
     }
 
     public Boolean isEntryTile(TileBase[][] tileMap) {
-        if (posX == 0) {
+        if (this.posX == 0) {
             if (directions.get(0).equals("RIGHT")) {
                 return true;
             }
         }
-        if (posX == tileMap.length) {
+        if (this.posX == tileMap.length - 1) {
             if (directions.get(0).equals("LEFT")) {
                 return true;
             }
         }
-        if (posY == 0) {
+        if (this.posY == 0) {
             if (directions.get(0).equals("DOWN")) {
                 return true;
             }
         }
-        if (posY == tileMap[0].length) {
+        if (this.posY == tileMap[0].length - 1) {
             if (directions.get(0).equals("UP")) {
                 return true;
             }
@@ -90,23 +90,23 @@ public class TileBase {
         return false;
     }
 
-    public Boolean isExitTile(TileBase[][] tileMap)  {
-        if (posX == 0) {
+    public Boolean isExitTile(TileBase[][] tileMap) {
+        if (this.posX == 0) {
             if (directions.get(0).equals("LEFT")) {
                 return true;
             }
         }
-        if (posX == tileMap.length) {
+        if (this.posX == tileMap.length) {
             if (directions.get(0).equals("RIGHT")) {
                 return true;
             }
         }
-        if (posY == 0) {
+        if (this.posY == 0) {
             if (directions.get(0).equals("UP")) {
                 return true;
             }
         }
-        if (posY == tileMap[0].length) {
+        if (this.posY == tileMap[0].length - 1) {
             if (directions.get(0).equals("DOWN")) {
                 return true;
             }

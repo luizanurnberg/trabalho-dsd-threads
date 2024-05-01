@@ -2,6 +2,10 @@ package model;
 
 import model.Tile.TileBase;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class Vehicle extends Thread {
     private TileBase currentTile;
     private TileBase[] path;
@@ -22,13 +26,52 @@ public class Vehicle extends Thread {
     }
 
     protected TileBase[] generateTilePath(TileBase[][] tileMap) {
-        TileBase[] generatedList = new TileBase[tileMap.length];
+        List<TileBase> entryTiles = findEntryTiles(tileMap);
+        TileBase entryTile = entryTiles.get(new Random().nextInt(entryTiles.size()));
+        int entryX = entryTile.getPosX();
+        int entryY = entryTile.getPosY();
+        TileBase[] generatedList;
 
-        for (int i = 0; i < generatedList.length; i++) {
-            generatedList[i] = tileMap[i][5];
+        if (entryY == 0 || entryY == tileMap.length - 1) { // Entrada em uma coluna
+            int numRows = tileMap.length;
+            generatedList = new TileBase[numRows];
+            if (entryY == 0) { // Da esquerda para a direita
+                for (int i = 0; i < numRows; i++) {
+                    generatedList[i] = tileMap[i][entryX];
+                }
+            } else { // Da direita para a esquerda
+                for (int i = 0; i < numRows; i++) {
+                    generatedList[i] = tileMap[numRows - 1 - i][entryX];
+                }
+            }
+        } else { // Entrada em uma linha
+            int numColumns = tileMap[0].length;
+            generatedList = new TileBase[numColumns];
+            if (entryX == 0) { // De cima para baixo
+                for (int j = 0; j < numColumns; j++) {
+                    generatedList[j] = tileMap[entryY][j];
+                }
+            } else { // De baixo para cima
+                for (int j = 0; j < numColumns; j++) {
+                    generatedList[j] = tileMap[entryY][numColumns - 1 - j];
+                }
+            }
         }
 
         return generatedList;
+    }
+
+
+    private List<TileBase> findEntryTiles(TileBase[][] tileMap) {
+        List<TileBase> entryTiles = new ArrayList<>();
+        for (TileBase[] tiles : tileMap) {
+            for (TileBase tile : tiles) {
+                if (tile.isEntryTile(tileMap)) {
+                    entryTiles.add(tile);
+                }
+            }
+        }
+        return entryTiles;
     }
 
     @Override
