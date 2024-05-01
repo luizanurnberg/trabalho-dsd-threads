@@ -34,6 +34,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
+          <text value="1"/>
         </properties>
       </component>
       <component id="71a8d" class="javax.swing.JLabel" binding="lbNumberSimultaneousVehicles">
@@ -53,6 +54,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
+          <text value="1"/>
         </properties>
       </component>
       <component id="c11a6" class="javax.swing.JLabel" binding="lbRangeInsertion">
@@ -72,6 +74,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
+          <text value="1"/>
         </properties>
       </component>
       <component id="8da9d" class="javax.swing.JLabel" binding="lbGrid">
@@ -89,6 +92,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
+          <selected value="false"/>
           <text value="Malha 1"/>
         </properties>
       </component>
@@ -125,6 +129,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
+          <selected value="true"/>
           <text value="Malha 3"/>
         </properties>
       </component>
@@ -152,6 +157,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
+          <selected value="true"/>
           <text value="Semáforo"/>
         </properties>
       </component>
