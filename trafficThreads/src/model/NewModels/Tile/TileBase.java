@@ -1,6 +1,7 @@
 package model.NewModels.Tile;
 
 import model.NewModels.Vehicle;
+import view.Simulation;
 
 import javax.swing.*;
 import java.util.List;
@@ -35,6 +36,39 @@ public class TileBase {
 
     public void setTileLabel(JLabel tileLabel) {
         this.tileLabel = tileLabel;
+    }
+
+    public void removeVehicleFromTile() {
+        setCurrentVehicle(null);
+        this.setTileCurrentImage();
+    }
+
+    protected void setTileCurrentImage() {
+        if(this.currentVehicle == null) {
+            String imagePath = this.getImagePath();
+            String relativePath = "icons/" + imagePath;
+
+            ImageIcon icon = new ImageIcon(getResource(relativePath));
+
+            this.tileLabel.setIcon(icon);
+        }
+
+        if(this.currentVehicle != null) {
+            String imagePath = this.currentVehicle.getImagePath();
+            String relativePath = "icons/" + imagePath;
+
+            ImageIcon icon = new ImageIcon(getResource(relativePath));
+
+            this.tileLabel.setIcon(icon);
+        }
+    }
+
+    public boolean moveVehicleToTile(Vehicle vehicle) {
+        return false;
+    }
+
+    protected static java.net.URL getResource(String path) {
+        return TileBase.class.getClassLoader().getResource(path);
     }
 
     public boolean isAvaliable() {

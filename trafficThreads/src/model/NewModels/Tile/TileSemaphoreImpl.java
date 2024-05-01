@@ -3,24 +3,47 @@ package model.NewModels.Tile;
 import model.NewModels.Vehicle;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
-public class TileSemaphoreImpl extends TileBase implements ITile {
+public class TileSemaphoreImpl extends TileBase {
     private Semaphore semaphore = new Semaphore(1);
 
-    @Override
-    public void moveVehicleToTile(Vehicle vehicle) {
+    public TileSemaphoreImpl() {
+        super();
+    }
+
+    private boolean tryAcquire() {
+        boolean acquired = false;
         try {
-            semaphore.acquire();
-            if (this.isAvaliable()) {
-                this.currentVehicle = vehicle;
-                System.out.println("Vehicle moved to tile: " + this);
-            } else {
-                System.out.println("Tile is occupied. Vehicle cannot move to tile: " + this);
-            }
+            acquired = this.semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            semaphore.release();
+            System.out.println("Failed to acquire Tile. Vehicle cannot move to tile: " + this);
         }
+        return acquired;
+
+    }
+
+    @Override
+    public boolean moveVehicleToTile(Vehicle vehicle) {
+        if(!this.isAvaliable()) {
+            return false;
+        }
+
+        boolean hasAcquiredTile = this.tryAcquire();
+
+        if(hasAcquiredTile) {
+            this.currentVehicle = vehicle;
+            this.setTileCurrentImage();
+
+            System.out.println("Vehicle moved to tile: " + this);
+
+            this.semaphore.release();
+
+            vehicle.getCurrentTile().removeVehicleFromTile();
+            vehicle.setCurrentTile(this);
+            return true;
+        }
+
+        return false;
     }
 }

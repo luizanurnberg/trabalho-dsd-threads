@@ -11,29 +11,11 @@ import java.util.Objects;
 public class Simulation extends JFrame {
     private JPanel jpPainel;
     private JButton btnFinish;
-    private String selectedGrid;
-    private int exclusionType;
-    private int numVehicles;
-    private int numSimultaneousVehicles;
-    private int rangeInsertion;
-    private int[][] grid;
     private TileBase[][] tilesGrid;
 
-    public Simulation(
-            int[][] grid,
-            int exclusionType,
-            int numVehicles,
-            int numSimultaneousVehicles,
-            int rangeInsertion,
-            TileBase[][] tilesGrid
-    ) {
+    public Simulation(TileBase[][] tilesGrid) {
         super("Simulation");
-        this.grid = grid;
         this.tilesGrid = tilesGrid;
-        this.exclusionType = exclusionType;
-        this.numVehicles = numVehicles;
-        this.numSimultaneousVehicles = numSimultaneousVehicles;
-        this.rangeInsertion = rangeInsertion;
 
         initializeSimulationFrame();
     }
@@ -44,7 +26,7 @@ public class Simulation extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        jpPainel = new JPanel(new GridLayout(grid.length, grid[0].length));
+        jpPainel = new JPanel(new GridLayout(tilesGrid.length, tilesGrid[0].length));
 
         jpPainel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         jpPainel.setBackground(Color.WHITE);

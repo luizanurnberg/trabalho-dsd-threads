@@ -51,7 +51,6 @@ public class Menu extends JFrame{
             if(!validateInputs()) {
                 JOptionPane.showMessageDialog(null,"Campos em branco, favor preencher!");
             } else {
-
                 String selectedGrid = getSelectedGrid();
                 int exclusionType = getExclusionType();
                 int numberOfVehicles = getNumberVehicles();
@@ -60,7 +59,6 @@ public class Menu extends JFrame{
 
                 SimulationController simulationController = new SimulationController();
                 simulationController.startSimulation(selectedGrid, exclusionType, numberOfVehicles, numberOfSimultaneousVehicles, rangeInsertion);
-
             }
         });
     }
