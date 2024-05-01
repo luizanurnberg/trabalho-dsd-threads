@@ -61,9 +61,9 @@ public class Simulation extends JFrame {
     }
 
     private void plotImagesOnMap(TileBase[][] grid, JPanel jpPainel) {
-        for (int x = 0; x < grid.length -1; x++) {
-            for (int y = 0; y < grid[0].length - 1; y++) {
-                TileBase currentTile = grid[x][y];
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[0].length; x++) {
+                TileBase currentTile = grid[y][x];
 
                 String imagePath = currentTile.getImagePath();
                 String relativePath = "icons/" + imagePath;

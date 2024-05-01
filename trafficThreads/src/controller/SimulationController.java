@@ -46,18 +46,20 @@ public class SimulationController {
 
         TileBase[][] grid = new TileBase[numberOfRows][numberOfColumns];
 
-        for (int x = 0; x < numberOfRows - 1; x++) {
+        for (int y = 0; y < numberOfRows; y++) {
             String[] values = reader.readLine().split("\\s+");
-            for (int y = 0; y < numberOfColumns - 1; y++) {
+
+            for (int x = 0; x < values.length; x++) {
                 TileBase tile = new TileBase();
-                TerrainType terrainType = TerrainType.getByValue(parseInt(values[0]));
+                int currentValue = parseInt(values[x]);
+                TerrainType terrainType = TerrainType.getByValue(currentValue);
 
                 tile.setDirections(terrainType.getDirections());
                 tile.setImagePath(terrainType.getImagePath());
                 tile.setPosX(x);
                 tile.setPosY(y);
 
-                grid[x][y] = tile;
+                grid[y][x] = tile;
             }
         }
 
@@ -65,7 +67,17 @@ public class SimulationController {
         return grid;
     }
 
-    private int[][] loadGridFromFile(String filePath) throws IOException {
+//    private Icon[][] prepareIconsForGrid(int[][] grid) {
+//        Icon[][] icons = new Icon[grid.length][grid[0].length];
+//        for (int i = 0; i < grid.length; i++) {
+//            for (int j = 0; j < grid[i].length; j++) {
+//                icons[i][j] = getIconForValue(grid[i][j]);
+//            }
+//        }
+//        return icons;
+//    }
+
+        private int[][] loadGridFromFile(String filePath) throws IOException {
         URL relativeFilePath = SimulationController.class.getClassLoader().getResource(filePath);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(relativeFilePath.openStream()));
