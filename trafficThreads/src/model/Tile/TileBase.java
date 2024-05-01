@@ -82,7 +82,7 @@ public class TileBase {
                 return true;
             }
         }
-        if (this.posY == tileMap[0].length - 1) {
+        if (this.posY == tileMap.length - 1) {
             if (directions.get(0).equals("UP")) {
                 return true;
             }

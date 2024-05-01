@@ -61,7 +61,6 @@ public class Vehicle extends Thread {
         return generatedList;
     }
 
-
     private List<TileBase> findEntryTiles(TileBase[][] tileMap) {
         List<TileBase> entryTiles = new ArrayList<>();
         for (TileBase[] tiles : tileMap) {
@@ -80,7 +79,7 @@ public class Vehicle extends Thread {
             TileBase nextTile = path[currentPathIndex];
             boolean vehicleMoved = nextTile.moveVehicleToTile(this);
 
-            if(vehicleMoved){
+            if (vehicleMoved) {
                 currentPathIndex++;
             }
 
