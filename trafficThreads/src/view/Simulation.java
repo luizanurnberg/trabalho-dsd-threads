@@ -2,6 +2,7 @@ package view;
 
 import com.sun.tools.javac.Main;
 import constants.TerrainType;
+import model.NewModels.Tile.TileBase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,10 +17,19 @@ public class Simulation extends JFrame {
     private int numSimultaneousVehicles;
     private int rangeInsertion;
     private int[][] grid;
+    private TileBase[][] tilesGrid;
 
-    public Simulation(int[][] grid, int exclusionType, int numVehicles, int numSimultaneousVehicles, int rangeInsertion) {
+    public Simulation(
+            int[][] grid,
+            int exclusionType,
+            int numVehicles,
+            int numSimultaneousVehicles,
+            int rangeInsertion,
+            TileBase[][] tilesGrid
+    ) {
         super("Simulation");
         this.grid = grid;
+        this.tilesGrid = tilesGrid;
         this.exclusionType = exclusionType;
         this.numVehicles = numVehicles;
         this.numSimultaneousVehicles = numSimultaneousVehicles;
@@ -39,7 +49,7 @@ public class Simulation extends JFrame {
         jpPainel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         jpPainel.setBackground(Color.WHITE);
 
-        plotImagesOnMap(grid,jpPainel);
+        plotImagesOnMap(this.tilesGrid, jpPainel);
 
         btnFinish = new JButton("Finalizar");
         JPanel buttonPanel = new JPanel();
@@ -50,17 +60,22 @@ public class Simulation extends JFrame {
         setVisible(true);
     }
 
-    private void plotImagesOnMap(int[][] grid, JPanel jpPainel) {
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                String imagePath = TerrainType.getImagePath(this.grid[i][j]);
+    private void plotImagesOnMap(TileBase[][] grid, JPanel jpPainel) {
+        for (int x = 0; x < grid.length -1; x++) {
+            for (int y = 0; y < grid[0].length - 1; y++) {
+                TileBase currentTile = grid[x][y];
+
+                String imagePath = currentTile.getImagePath();
                 String relativePath = "icons/" + imagePath;
 
                 ImageIcon icon = new ImageIcon(getResource(relativePath));
 
                 JLabel label = new JLabel(icon);
-                label.setHorizontalAlignment(SwingConstants.CENTER);
-                jpPainel.add(label);
+
+                currentTile.setTileLabel(label);
+
+                currentTile.getTileLabel().setHorizontalAlignment(SwingConstants.CENTER);
+                jpPainel.add(currentTile.getTileLabel());
             }
         }
     }

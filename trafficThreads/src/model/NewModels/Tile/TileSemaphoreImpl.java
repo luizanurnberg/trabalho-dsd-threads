@@ -4,7 +4,7 @@ import model.NewModels.Vehicle;
 
 import java.util.concurrent.Semaphore;
 
-public class TileBaseSemaphoreImpl extends TileBase implements ITile {
+public class TileSemaphoreImpl extends TileBase implements ITile {
     private Semaphore semaphore = new Semaphore(1);
 
     @Override

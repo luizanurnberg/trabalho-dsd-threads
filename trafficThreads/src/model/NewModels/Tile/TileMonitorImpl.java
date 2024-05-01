@@ -2,7 +2,7 @@ package model.NewModels.Tile;
 
 import model.NewModels.Vehicle;
 
-public class TileBaseMonitorImpl extends TileBase implements ITile {
+public class TileMonitorImpl extends TileBase implements ITile {
     @Override
     public synchronized void moveVehicleToTile(Vehicle vehicle) {
         if (this.isAvaliable()) {

@@ -2,21 +2,51 @@ package model.NewModels.Tile;
 
 import model.NewModels.Vehicle;
 
+import javax.swing.*;
+import java.util.List;
+
 public class TileBase {
-    protected int direction;
+    protected List<String> directions;
     protected String imagePath;
     protected Vehicle currentVehicle;
+    protected int posX;
+    protected int posY;
+    protected JLabel tileLabel;
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public int getPosY() {
+        return posY;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
+
+    public JLabel getTileLabel() {
+        return tileLabel;
+    }
+
+    public void setTileLabel(JLabel tileLabel) {
+        this.tileLabel = tileLabel;
+    }
 
     public boolean isAvaliable() {
         return this.currentVehicle == null;
     }
 
-    public int getDirection() {
-        return direction;
+    public List<String> getDirections() {
+        return directions;
     }
 
-    public void setDirection(int direction) {
-        this.direction = direction;
+    public void setDirections(List<String> directions) {
+        this.directions = directions;
     }
 
     public String getImagePath() {
