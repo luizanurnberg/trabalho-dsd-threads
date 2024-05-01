@@ -67,11 +67,59 @@ public class TileBase {
         return false;
     }
 
+    public Boolean isEntryTile(TileBase[][] tileMap) {
+        if (posX == 0) {
+            if (directions.get(0).equals("RIGHT")) {
+                return true;
+            }
+        }
+        if (posX == tileMap.length) {
+            if (directions.get(0).equals("LEFT")) {
+                return true;
+            }
+        }
+        if (posY == 0) {
+            if (directions.get(0).equals("DOWN")) {
+                return true;
+            }
+        }
+        if (posY == tileMap[0].length) {
+            if (directions.get(0).equals("UP")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean isExitTile(TileBase[][] tileMap)  {
+        if (posX == 0) {
+            if (directions.get(0).equals("LEFT")) {
+                return true;
+            }
+        }
+        if (posX == tileMap.length) {
+            if (directions.get(0).equals("RIGHT")) {
+                return true;
+            }
+        }
+        if (posY == 0) {
+            if (directions.get(0).equals("UP")) {
+                return true;
+            }
+        }
+        if (posY == tileMap[0].length) {
+            if (directions.get(0).equals("DOWN")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected static java.net.URL getResource(String path) {
         return TileBase.class.getClassLoader().getResource(path);
     }
 
-    public boolean isAvaliable() {
+    protected boolean isAvaliable() {
         return this.currentVehicle == null;
     }
 

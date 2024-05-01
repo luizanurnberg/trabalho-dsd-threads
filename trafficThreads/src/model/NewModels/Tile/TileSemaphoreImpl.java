@@ -8,19 +8,16 @@ import java.util.concurrent.TimeUnit;
 public class TileSemaphoreImpl extends TileBase {
     private Semaphore semaphore = new Semaphore(1);
 
-    public TileSemaphoreImpl() {
-        super();
-    }
-
     private boolean tryAcquire() {
         boolean acquired = false;
+
         try {
             acquired = this.semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.out.println("Failed to acquire Tile. Vehicle cannot move to tile: " + this);
         }
-        return acquired;
 
+        return acquired;
     }
 
     @Override
