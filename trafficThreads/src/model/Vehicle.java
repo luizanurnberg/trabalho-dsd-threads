@@ -1,15 +1,17 @@
-package model.NewModels;
+package model;
 
-import model.NewModels.Tile.TileBase;
+import model.Tile.TileBase;
 
 public class Vehicle extends Thread {
     private TileBase currentTile;
     private TileBase[] path;
     private int currentPathIndex;
     private String imagePath;
+    private int vehicleSpeed;
 
-    public Vehicle(String imagePath) {
+    public Vehicle(String imagePath, int vehicleSpeed) {
         this.imagePath = imagePath;
+        this.vehicleSpeed = vehicleSpeed;
     }
 
     public void setupVehicle(TileBase[][] tileMap) {
@@ -20,7 +22,7 @@ public class Vehicle extends Thread {
     }
 
     protected TileBase[] generateTilePath(TileBase[][] tileMap) {
-        TileBase[] generatedList = new TileBase[20];
+        TileBase[] generatedList = new TileBase[tileMap.length];
 
         for (int i = 0; i < generatedList.length; i++) {
             generatedList[i] = tileMap[i][5];
@@ -40,13 +42,13 @@ public class Vehicle extends Thread {
             }
 
             try {
-                Thread.sleep(200);
+                Thread.sleep(this.vehicleSpeed * 100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-//        this.currentTile.removeVehicleFromTile();
+        this.currentTile.removeVehicleFromTile();
     }
 
     public TileBase[] getPath() {
@@ -63,6 +65,14 @@ public class Vehicle extends Thread {
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public int getVehicleSpeed() {
+        return vehicleSpeed;
+    }
+
+    public void setVehicleSpeed(int vehicleSpeed) {
+        this.vehicleSpeed = vehicleSpeed;
     }
 
     public void setImagePath(String imagePath) {

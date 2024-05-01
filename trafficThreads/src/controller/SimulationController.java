@@ -1,52 +1,110 @@
 package controller;
-
+import java.util.List;
+import java.util.ArrayList;
+import constants.ExclusionType;
+import constants.GridType;
 import constants.TerrainType;
-import model.NewModels.Tile.TileBase;
-import model.NewModels.Tile.TileMonitorImpl;
-import model.NewModels.Tile.TileSemaphoreImpl;
-import model.NewModels.Vehicle;
-import view.Menu;
+import model.Tile.TileBase;
+import model.Tile.TileMonitorImpl;
+import model.Tile.TileSemaphoreImpl;
+import model.Tile.TileSocketImpl;
+import model.Vehicle;
 import view.Simulation;
 
-import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Integer.parseInt;
 
 public class SimulationController {
+    //  maybe pass constant to enum
+    private static final String[] VEHICLE_IMAGE_PATHS = {
+            "vehicle_jeep.png",
+            "vehicle_kwid.png",
+            "vehicle_audi.png",
+            "vehicle_bmw.png"
+    };
+    private List<Vehicle> runningVehicles;
+    private List<Vehicle> availableVehicles;
+
+    public SimulationController() {
+        runningVehicles = new ArrayList<>();
+        availableVehicles = new ArrayList<>();
+    }
 
     public void startSimulation(
-            String selectedGrid,
-            int exclusionType,
+            GridType selectedGrid,
+            ExclusionType exclusionType,
             int numVehicles,
             int numSimultaneousVehicles,
-            int rangeInsertion
+            int rangeInsertion,
+            int vehicleSpeed
     ) {
         try {
-            TileBase[][] tilesGrid = loadTilesFromFile(selectedGrid);
+            TileBase[][] tilesGrid = loadTilesFromFile(selectedGrid, exclusionType);
 
             Simulation simulation = new Simulation(tilesGrid);
-            simulation.setVisible(true);
+            simulation.initializeSimulationFrame();
 
-            runSimulation(tilesGrid);
+            createVehicles(numVehicles, tilesGrid, vehicleSpeed);
+
+            runVehicles(numSimultaneousVehicles, rangeInsertion);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void runSimulation(TileBase[][] tilesGrid) {
-        for (int i = 0; i <50 ; i++) {
-            Vehicle vehicle = new Vehicle("vehicle_jeep.png");
+    private void createVehicles(int numVehicles, TileBase[][] tilesGrid, int vehicleSpeed) {
+        for (int i = 0; i < numVehicles; i++) {
+            String imagePath = getRandomVehicleImagePath();
+            Vehicle vehicle = new Vehicle(imagePath, vehicleSpeed);
             vehicle.setupVehicle(tilesGrid);
-            vehicle.start();
+            availableVehicles.add(vehicle);
         }
     }
 
-    private TileBase[][] loadTilesFromFile(String filePath) throws IOException {
+    private String getRandomVehicleImagePath() {
+        int index = ThreadLocalRandom.current().nextInt(VEHICLE_IMAGE_PATHS.length);
+
+        return VEHICLE_IMAGE_PATHS[index];
+    }
+
+    private void runVehicles(int numSimultaneousVehicles, int rangeInsertion) {
+        while (!availableVehicles.isEmpty()) {
+            int numRunningVehicles = Math.min(numSimultaneousVehicles, availableVehicles.size());
+            for (int i = 0; i < numRunningVehicles; i++) {
+                Vehicle vehicle = availableVehicles.remove(0);
+                runningVehicles.add(vehicle);
+                vehicle.start();
+            }
+
+//            try {
+//                Thread.sleep(rangeInsertion * 100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+
+            removeFinishedVehicles();
+        }
+    }
+
+    private void removeFinishedVehicles() {
+        List<Vehicle> finishedVehicles = new ArrayList<>();
+        for (Vehicle vehicle : runningVehicles) {
+            if (!vehicle.isAlive()) {
+                finishedVehicles.add(vehicle);
+            }
+        }
+        runningVehicles.removeAll(finishedVehicles);
+    }
+
+
+    private TileBase[][] loadTilesFromFile(GridType gridType, ExclusionType exclusionType) throws IOException {
+        String filePath = gridType.getImagePath();
+
         URL relativeFilePath = SimulationController.class.getClassLoader().getResource(filePath);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(relativeFilePath.openStream()));
@@ -60,20 +118,38 @@ public class SimulationController {
             String[] values = reader.readLine().split("\\s+");
 
             for (int x = 0; x < values.length; x++) {
-                TileBase tile = new TileSemaphoreImpl();
-                int currentValue = parseInt(values[x]);
-                TerrainType terrainType = TerrainType.getByValue(currentValue);
-
-                tile.setDirections(terrainType.getDirections());
-                tile.setImagePath(terrainType.getImagePath());
-                tile.setPosX(x);
-                tile.setPosY(y);
-
+                TileBase tile = createTile(values[x], x, y, exclusionType);
                 grid[y][x] = tile;
             }
         }
 
         reader.close();
         return grid;
+    }
+
+    private TileBase createTile(String meshValue, int posX, int posY, ExclusionType exclusionType) {
+        TileBase tile = null;
+
+        switch (exclusionType) {
+            case MONITOR:
+                tile = new TileMonitorImpl();
+                break;
+            case SEMAPHORE:
+                tile = new TileSemaphoreImpl();
+                break;
+            case SOCKTES:
+                tile = new TileSocketImpl();
+                break;
+        }
+
+        int currentValue = parseInt(meshValue);
+        TerrainType terrainType = TerrainType.getByValue(currentValue);
+
+        tile.setDirections(terrainType.getDirections());
+        tile.setImagePath(terrainType.getImagePath());
+        tile.setPosX(posX);
+        tile.setPosY(posY);
+
+        return tile;
     }
 }

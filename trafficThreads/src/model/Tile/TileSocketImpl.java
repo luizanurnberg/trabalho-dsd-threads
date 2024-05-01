@@ -1,6 +1,6 @@
-package model.NewModels.Tile;
+package model.Tile;
 
-import model.NewModels.Vehicle;
+import model.Vehicle;
 
 import java.net.ServerSocket;
 import java.net.Socket;

@@ -1,6 +1,6 @@
-package model.NewModels.Tile;
+package model.Tile;
 
-import model.NewModels.Vehicle;
+import model.Vehicle;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;

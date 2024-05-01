@@ -1,12 +1,9 @@
 package view;
 
-import com.sun.tools.javac.Main;
-import constants.TerrainType;
-import model.NewModels.Tile.TileBase;
+import model.Tile.TileBase;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class Simulation extends JFrame {
     private JPanel jpPainel;
@@ -16,11 +13,9 @@ public class Simulation extends JFrame {
     public Simulation(TileBase[][] tilesGrid) {
         super("Simulation");
         this.tilesGrid = tilesGrid;
-
-        initializeSimulationFrame();
     }
 
-    private void initializeSimulationFrame() {
+    public void initializeSimulationFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 900);
         setLocationRelativeTo(null);

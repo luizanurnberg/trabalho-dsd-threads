@@ -1,7 +1,6 @@
-package model.NewModels.Tile;
+package model.Tile;
 
-import model.NewModels.Vehicle;
-import view.Simulation;
+import model.Vehicle;
 
 import javax.swing.*;
 import java.util.List;

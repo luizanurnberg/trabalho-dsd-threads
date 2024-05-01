@@ -36,7 +36,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
-          <text value="1"/>
+          <text value="100"/>
         </properties>
       </component>
       <component id="71a8d" class="javax.swing.JLabel" binding="lbNumberSimultaneousVehicles">
@@ -56,7 +56,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
-          <text value="1"/>
+          <text value="15"/>
         </properties>
       </component>
       <component id="c11a6" class="javax.swing.JLabel" binding="lbRangeInsertion">
@@ -76,7 +76,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
-          <text value="1"/>
+          <text value="3"/>
         </properties>
       </component>
       <component id="8da9d" class="javax.swing.JLabel" binding="lbGrid">
@@ -163,7 +163,7 @@
           <text value="Semáforo"/>
         </properties>
       </component>
-      <component id="ff7ec" class="javax.swing.JLabel">
+      <component id="ff7ec" class="javax.swing.JLabel" binding="lbVehicleSpeed">
         <constraints>
           <grid row="5" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="2" use-parent-layout="false"/>
         </constraints>
@@ -172,7 +172,7 @@
           <text value="Velocidade dos Veículos"/>
         </properties>
       </component>
-      <component id="c67a6" class="javax.swing.JTextField">
+      <component id="c67a6" class="javax.swing.JTextField" binding="tfVehicleSpeed">
         <constraints>
           <grid row="6" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="9" fill="0" indent="2" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -180,7 +180,7 @@
         </constraints>
         <properties>
           <font name="JetBrains Mono" size="14"/>
-          <text value="1"/>
+          <text value="3"/>
         </properties>
       </component>
     </children>

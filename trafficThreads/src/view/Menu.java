@@ -1,6 +1,8 @@
 package view;
 
 import com.sun.tools.javac.Main;
+import constants.ExclusionType;
+import constants.GridType;
 import controller.SimulationController;
 
 import javax.swing.*;
@@ -25,6 +27,8 @@ public class Menu extends JFrame{
     private JRadioButton rbSemaphore;
     private JRadioButton rbMessageExchange;
     private JButton btnStart;
+    private JTextField tfVehicleSpeed;
+    private JLabel lbVehicleSpeed;
     private ButtonGroup gridGroup;
     private ButtonGroup exclusionTypeGroup;
 
@@ -47,53 +51,74 @@ public class Menu extends JFrame{
         exclusionTypeGroup.add(rbSemaphore);
         exclusionTypeGroup.add(rbMessageExchange);
 
-        btnStart.addActionListener((ActionEvent e) -> {
-            if(!validateInputs()) {
-                JOptionPane.showMessageDialog(null,"Campos em branco, favor preencher!");
-            } else {
-                String selectedGrid = getSelectedGrid();
-                int exclusionType = getExclusionType();
-                int numberOfVehicles = getNumberVehicles();
-                int numberOfSimultaneousVehicles = getNumberSimultaneousVehicles();
-                int rangeInsertion = getRangeInsertion();
+        btnStart.addActionListener((ActionEvent e) -> onPressStartHandler());
+    }
 
-                SimulationController simulationController = new SimulationController();
-                simulationController.startSimulation(selectedGrid, exclusionType, numberOfVehicles, numberOfSimultaneousVehicles, rangeInsertion);
-            }
-        });
+    private void onPressStartHandler() {
+        if(!validateInputs()) {
+            JOptionPane.showMessageDialog(null,"Campos em branco, favor preencher!");
+        } else {
+            GridType selectedGrid = getSelectedGrid();
+            ExclusionType exclusionType = getExclusionType();
+
+            int numberOfVehicles = getNumberVehicles();
+            int numberOfSimultaneousVehicles = getNumberSimultaneousVehicles();
+            int rangeInsertion = getRangeInsertion();
+            int vehicleSpeed = getVehicleSpeed();
+
+            SimulationController simulationController = new SimulationController();
+
+            simulationController.startSimulation(
+                    selectedGrid,
+                    exclusionType,
+                    numberOfVehicles,
+                    numberOfSimultaneousVehicles,
+                    rangeInsertion,
+                    vehicleSpeed
+            );
+        }
     }
 
     private boolean validateInputs() {
-        if (tfNumberVehicles.getText().isEmpty() || tfNumberSimultaneousVehicles.getText().isEmpty() || tfRangeInsertion.getText().isEmpty()) {
+        if (
+            tfNumberVehicles.getText().isEmpty() ||
+            tfNumberSimultaneousVehicles.getText().isEmpty() ||
+            tfRangeInsertion.getText().isEmpty())
+        {
             return false;
         }
         return true;
     }
 
-    public String getSelectedGrid() {
+    public GridType getSelectedGrid() {
         if (this.rbGrid1.isSelected()) {
-            return ("grids/mesh1.txt");
+            return GridType.MESH_ONE;
         }
         if (this.rbGrid2.isSelected()) {
-            return ("grids/mesh2.txt");
+            return GridType.MESH_TWO;
         }
         if (this.rbGrid3.isSelected()) {
-            return ("grids/mesh3.txt");
+            return GridType.MESH_THREE;
         }
         return null;
     }
 
-    public int getExclusionType() {
+    public ExclusionType getExclusionType() {
         if (this.rbSemaphore.isSelected()) {
-            return 1;
+            return ExclusionType.SEMAPHORE;
         }
         if (this.rbMonitor.isSelected()) {
-            return 2;
+            return ExclusionType.MONITOR;
         }
         if (this.rbMessageExchange.isSelected()) {
-            return 3;
+            return ExclusionType.SOCKTES;
         }
-        return 0;
+
+        return null;
+    }
+
+    public int getVehicleSpeed() {
+        return Integer.parseInt(tfVehicleSpeed.getText());
     }
 
     public int getNumberVehicles() {
