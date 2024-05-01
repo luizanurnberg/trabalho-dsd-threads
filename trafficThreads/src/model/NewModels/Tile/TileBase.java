@@ -1,8 +1,14 @@
 package model.NewModels.Tile;
 
+import controller.SimulationController;
 import model.NewModels.Vehicle;
 
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TileBase {
@@ -63,5 +69,85 @@ public class TileBase {
 
     public void setCurrentVehicle(Vehicle currentVehicle) {
         this.currentVehicle = currentVehicle;
+    }
+
+    public Boolean isEntryTile(TileBase tile) throws IOException {
+        String pathFile = "grids/mesh2.txt";
+
+        URL relativeFilePath = SimulationController.class.getClassLoader().getResource(pathFile);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(relativeFilePath.openStream()));
+
+        int rows = Integer.parseInt(reader.readLine());
+        int cols = Integer.parseInt(reader.readLine());
+
+        int[][] grid = new int[rows][cols];
+        this.posX = 25;
+        this.posY = 2;
+        List<String> directions = new ArrayList<>();
+        directions.add("DOWN");
+        this.setDirections(directions);
+        directions = this.getDirections();
+
+        if (posX == 0) {
+            if (directions.get(0).equals("RIGHT")) {
+                return true;
+            }
+        }
+        if (posX == grid.length) {
+            if (directions.get(0).equals("LEFT")) {
+                return true;
+            }
+        }
+        if (posY == 0) {
+            if (directions.get(0).equals("DOWN")) {
+                return true;
+            }
+        }
+        if (posY == grid[0].length) {
+            if (directions.get(0).equals("UP")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean isExitTile() throws IOException {
+        String pathFile = "grids/mesh2.txt";
+
+        URL relativeFilePath = SimulationController.class.getClassLoader().getResource(pathFile);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(relativeFilePath.openStream()));
+
+        int rows = Integer.parseInt(reader.readLine());
+        int cols = Integer.parseInt(reader.readLine());
+
+        int[][] grid = new int[rows][cols];
+        this.posX = 25;
+        this.posY = 2;
+        List<String> directions = new ArrayList<>();
+        directions.add("DOWN");
+        this.setDirections(directions);
+        directions = this.getDirections();
+
+        if (posX == 0) {
+            if (directions.get(0).equals("LEFT")) {
+                return true;
+            }
+        }
+        if (posX == grid.length) {
+            if (directions.get(0).equals("RIGHT")) {
+                return true;
+            }
+        }
+        if (posY == 0) {
+            if (directions.get(0).equals("UP")) {
+                return true;
+            }
+        }
+        if (posY == grid[0].length) {
+            if (directions.get(0).equals("DOWN")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
