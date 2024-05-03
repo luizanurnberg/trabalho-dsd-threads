@@ -2,7 +2,9 @@ package model;
 
 import model.Tile.TileBase;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Vehicle extends Thread {
     private TileBase currentTile;
@@ -10,6 +12,8 @@ public class Vehicle extends Thread {
     private int currentPathIndex;
     private String imagePath;
     private int vehicleSpeed;
+
+    private TileBase[][] tileMap;
 
     public Vehicle(String imagePath, int vehicleSpeed) {
         this.imagePath = imagePath;
@@ -21,6 +25,7 @@ public class Vehicle extends Thread {
         this.path = tilePath;
         this.currentTile = tilePath[0];
         this.currentPathIndex = 0;
+        this.tileMap = tileMap;
     }
 
     protected TileBase[] generateTilePath(TileBase[][] tileMap) {
@@ -97,20 +102,114 @@ public class Vehicle extends Thread {
         return entryTiles;
     }
 
+    protected ArrayList<TileBase> getNearbyCrossings(TileBase tile) {
+        ArrayList<TileBase> nearbyCrossings = new ArrayList<>();
+
+        TileBase tileNorth = tileMap[tile.getPosY() - 1][tile.getPosX()];
+        if (tileNorth.isCrossing()) {
+            nearbyCrossings.add(tileNorth);
+        }
+
+        TileBase tileSouth = tileMap[tile.getPosY() + 1][tile.getPosX()];
+        if (tileSouth.isCrossing()) {
+            nearbyCrossings.add(tileSouth);
+        }
+
+        TileBase tileEast = tileMap[tile.getPosY()][tile.getPosX() + 1];
+        if (tileEast.isCrossing()) {
+            nearbyCrossings.add(tileEast);
+        }
+
+        TileBase tileWest = tileMap[tile.getPosY()][tile.getPosX() - 1];
+        if (tileWest.isCrossing()) {
+            nearbyCrossings.add(tileWest);
+        }
+
+        TileBase tileNortheast = tileMap[tile.getPosY() - 1][tile.getPosX() + 1];
+        if (tileNortheast.isCrossing()) {
+            nearbyCrossings.add(tileNortheast);
+        }
+
+        TileBase tileNorthwest = tileMap[tile.getPosY() - 1][tile.getPosX() - 1];
+        if (tileNorthwest.isCrossing()) {
+            nearbyCrossings.add(tileNorthwest);
+        }
+
+        TileBase tileSoutheast = tileMap[tile.getPosY() + 1][tile.getPosX() + 1];
+        if (tileSoutheast.isCrossing()) {
+            nearbyCrossings.add(tileSoutheast);
+        }
+
+        TileBase tileSouthwest = tileMap[tile.getPosY() + 1][tile.getPosX() - 1];
+        if (tileSouthwest.isCrossing()) {
+            nearbyCrossings.add(tileSouthwest);
+        }
+
+        return nearbyCrossings;
+    }
+
+    protected void resolveCrossing(TileBase firstCrossingTile) {
+        ArrayList<TileBase> crossingTiles = new ArrayList<>();
+        int currentTileIndex = this.currentPathIndex;
+
+        while (firstCrossingTile.isCrossing()) {
+            crossingTiles.add(firstCrossingTile);
+
+            firstCrossingTile = this.path[currentTileIndex];
+            currentTileIndex++;
+        }
+
+//        ArrayList<TileBase> nearbyCrossings = getNearbyCrossings(firstCrossingTile);
+//        nearbyCrossings.add(firstCrossingTile);
+
+        ArrayList<TileBase> reservedTiles = new ArrayList<>();
+
+        for (TileBase crossingTile : crossingTiles) {
+            boolean wasTileReserved = crossingTile.reserveTile(this);
+
+            if (wasTileReserved) {
+                reservedTiles.add(crossingTile);
+            }
+        }
+
+        if (reservedTiles.size() != crossingTiles.size()) {
+            for (TileBase tileToUnreserve : reservedTiles) {
+                tileToUnreserve.removeReservedVehicle(this);
+            }
+        } else {
+            for (TileBase crossingTile : reservedTiles) {
+                moveVehicle(crossingTile);
+            }
+
+            for (TileBase crossingTile : reservedTiles) {
+                crossingTile.removeReservedVehicle(this);
+            }
+        }
+    }
+
+    protected void moveVehicle(TileBase tileToMove) {
+        boolean vehicleMoved = tileToMove.moveVehicleToTile(this);
+
+        if (vehicleMoved) {
+            this.currentPathIndex++;
+        }
+
+        try {
+            Thread.sleep(this.vehicleSpeed * 100L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         while (currentPathIndex < path.length) {
             TileBase nextTile = path[currentPathIndex];
-            boolean vehicleMoved = nextTile.moveVehicleToTile(this);
 
-            if (vehicleMoved) {
-                currentPathIndex++;
-            }
-
-            try {
-                Thread.sleep(this.vehicleSpeed * 100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (nextTile.isCrossing()) {
+                resolveCrossing(nextTile);
+            } else {
+                moveVehicle(nextTile);
             }
         }
 

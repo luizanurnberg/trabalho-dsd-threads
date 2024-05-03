@@ -12,7 +12,7 @@ public class TileBase {
     protected int posX;
     protected int posY;
     protected JLabel tileLabel;
-    protected boolean reserved;
+    protected Vehicle reservedFor;
 
     public int getPosX() {
         return posX;
@@ -38,17 +38,29 @@ public class TileBase {
         this.tileLabel = tileLabel;
     }
 
-    public boolean isReserved() {
-        return reserved;
+    public boolean reserveTile(Vehicle vehicle) {
+        if (this.reservedFor != null && this.reservedFor != vehicle) {
+            return false;
+        }
+
+        this.setReserved(vehicle);
+        return true;
     }
 
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
+    public void removeReservedVehicle(Vehicle vehicle) {
+        if (reservedFor != null && reservedFor == vehicle) {
+            this.setReserved(null);
+        }
+    }
+
+    public void setReserved(Vehicle reserveFor) {
+        this.reservedFor = reserveFor;
     }
 
     public boolean isCrossing() {
         return this.directions.size() > 1;
     }
+
     public void removeVehicleFromTile() {
         setCurrentVehicle(null);
         this.setTileCurrentImage();
