@@ -48,7 +48,6 @@ public class Simulation extends JFrame {
                 ImageIcon icon = new ImageIcon(getResource(relativePath));
 
                 JLabel label = new JLabel(icon);
-
                 currentTile.setTileLabel(label);
 
                 currentTile.getTileLabel().setHorizontalAlignment(SwingConstants.CENTER);

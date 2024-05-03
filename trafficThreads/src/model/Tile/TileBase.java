@@ -12,6 +12,7 @@ public class TileBase {
     protected int posX;
     protected int posY;
     protected JLabel tileLabel;
+    protected boolean reserved;
 
     public int getPosX() {
         return posX;
@@ -37,6 +38,17 @@ public class TileBase {
         this.tileLabel = tileLabel;
     }
 
+    public boolean isReserved() {
+        return reserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        this.reserved = reserved;
+    }
+
+    public boolean isCrossing() {
+        return this.directions.size() > 1;
+    }
     public void removeVehicleFromTile() {
         setCurrentVehicle(null);
         this.setTileCurrentImage();

@@ -83,8 +83,9 @@ public class Menu extends JFrame{
         if (
             tfNumberVehicles.getText().isEmpty() ||
             tfNumberSimultaneousVehicles.getText().isEmpty() ||
-            tfRangeInsertion.getText().isEmpty())
-        {
+            tfRangeInsertion.getText().isEmpty() ||
+            tfVehicleSpeed.getText().isEmpty()
+        ) {
             return false;
         }
         return true;

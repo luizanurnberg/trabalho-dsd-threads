@@ -2,9 +2,7 @@ package model;
 
 import model.Tile.TileBase;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Vehicle extends Thread {
     private TileBase currentTile;
@@ -26,50 +24,76 @@ public class Vehicle extends Thread {
     }
 
     protected TileBase[] generateTilePath(TileBase[][] tileMap) {
-        List<TileBase> entryTiles = findEntryTiles(tileMap);
-        TileBase entryTile = entryTiles.get(new Random().nextInt(entryTiles.size()));
-        int entryX = entryTile.getPosX();
-        int entryY = entryTile.getPosY();
-        TileBase[] generatedList;
+        List<TileBase> pathTiles = new ArrayList<>();
 
-        if (entryY == 0 || entryY == tileMap.length - 1) { // Entrada em uma coluna
-            int numRows = tileMap.length;
-            generatedList = new TileBase[numRows];
-            if (entryY == 0) { // Da esquerda para a direita
-                for (int i = 0; i < numRows; i++) {
-                    generatedList[i] = tileMap[i][entryX];
-                }
-            } else { // Da direita para a esquerda
-                for (int i = 0; i < numRows; i++) {
-                    generatedList[i] = tileMap[numRows - 1 - i][entryX];
-                }
+        // Seleciona aleatoriamente um ponto de entrada
+        TileBase entryTile = getRandomEntryTile(tileMap);
+        pathTiles.add(entryTile);
+
+        // Enquanto não alcançar um ponto de saída
+        while (!entryTile.isExitTile(tileMap)) {
+            // Obtém as direções disponíveis para o próximo Tile
+            List<String> availableDirections = entryTile.getDirections();
+
+            // Escolhe aleatoriamente uma das direções disponíveis
+            String chosenDirection = availableDirections.get(new Random().nextInt(availableDirections.size()));
+
+            // Obtém a próxima posição com base na direção escolhida
+            int nextX = entryTile.getPosX();
+            int nextY = entryTile.getPosY();
+
+            switch (chosenDirection) {
+                case "UP":
+                    nextY--;
+                    break;
+                case "DOWN":
+                    nextY++;
+                    break;
+                case "LEFT":
+                    nextX--;
+                    break;
+                case "RIGHT":
+                    nextX++;
+                    break;
             }
-        } else { // Entrada em uma linha
-            int numColumns = tileMap[0].length;
-            generatedList = new TileBase[numColumns];
-            if (entryX == 0) { // De cima para baixo
-                for (int j = 0; j < numColumns; j++) {
-                    generatedList[j] = tileMap[entryY][j];
-                }
-            } else { // De baixo para cima
-                for (int j = 0; j < numColumns; j++) {
-                    generatedList[j] = tileMap[entryY][numColumns - 1 - j];
-                }
+
+            boolean isNextTileValid = nextX >= 0 && nextX < tileMap[0].length && nextY >= 0 && nextY < tileMap.length;
+
+            if (isNextTileValid) {
+                TileBase nextTile = tileMap[nextY][nextX];
+                // Adiciona o próximo Tile ao percurso
+                pathTiles.add(nextTile);
+                entryTile = nextTile;
+            } else {
+                // Caso contrário, encerra o loop
+                break;
             }
         }
 
-        return generatedList;
+        // Converte a lista de tiles para um array e retorna
+        return pathTiles.toArray(new TileBase[0]);
     }
 
-    private List<TileBase> findEntryTiles(TileBase[][] tileMap) {
+    private TileBase getRandomEntryTile(TileBase[][] tileMap) {
+        List<TileBase> entryTiles = findTilesByType(tileMap, true);
+        return entryTiles.get(new Random().nextInt(entryTiles.size()));
+    }
+
+    private List<TileBase> findTilesByType(TileBase[][] tileMap, boolean findEntryTiles) {
         List<TileBase> entryTiles = new ArrayList<>();
+
         for (TileBase[] tiles : tileMap) {
             for (TileBase tile : tiles) {
-                if (tile.isEntryTile(tileMap)) {
+                if (findEntryTiles && tile.isEntryTile(tileMap)) {
+                    entryTiles.add(tile);
+                }
+
+                if (!findEntryTiles && tile.isExitTile(tileMap)) {
                     entryTiles.add(tile);
                 }
             }
         }
+
         return entryTiles;
     }
 
