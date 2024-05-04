@@ -84,7 +84,7 @@ public class TileBase {
                 return true;
             }
         }
-        if (this.posX == tileMap.length - 1) {
+        if (this.posX == tileMap[0].length - 1) {
             if (directions.get(0).equals("LEFT")) {
                 return true;
             }
@@ -108,7 +108,7 @@ public class TileBase {
                 return true;
             }
         }
-        if (this.posX == tileMap.length) {
+        if (this.posX == tileMap[0].length) {
             if (directions.get(0).equals("RIGHT")) {
                 return true;
             }
