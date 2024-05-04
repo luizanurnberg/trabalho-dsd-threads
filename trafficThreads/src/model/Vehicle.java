@@ -11,13 +11,16 @@ public class Vehicle extends Thread {
     private String imagePath;
     private int vehicleSpeed;
 
+    private TileBase[][] tileMap;
+
     public Vehicle(String imagePath, int vehicleSpeed) {
         this.imagePath = imagePath;
         this.vehicleSpeed = vehicleSpeed;
     }
 
     public void setupVehicle(TileBase[][] tileMap) {
-        TileBase[] tilePath = generateTilePath(tileMap);
+        this.tileMap = tileMap;
+        TileBase[] tilePath = generateTilePath(tileMap, null);
         this.path = tilePath;
         this.currentTile = tilePath[0];
         this.currentPathIndex = 0;
@@ -27,12 +30,12 @@ public class Vehicle extends Thread {
         return currentPathIndex >= path.length;
     }
 
-    protected TileBase[] generateTilePath(TileBase[][] tileMap) {
+    protected TileBase[] generateTilePath(TileBase[][] tileMap, TileBase newEntryTile) {
         List<TileBase> pathTiles = new ArrayList<>();
         LinkedList<TileBase> recentTiles = new LinkedList<>();
 
         // Seleciona aleatoriamente um ponto de entrada
-        TileBase entryTile = getRandomEntryTile(tileMap);
+        TileBase entryTile = newEntryTile != null ? newEntryTile : getRandomEntryTile(tileMap);
         pathTiles.add(entryTile);
 
         // Enquanto não alcançar um ponto de saída
@@ -226,33 +229,28 @@ public class Vehicle extends Thread {
                 break;
             }
 
+            clearLastTiles();
+
             // Verifica se houve deadlock e tentou mais de 3 vezes percorrer o caminho
             if (nextTile == path[currentPathIndex] && nextTile.isCrossing()) {
                 deadlockAttempts++;
                 if (deadlockAttempts > 2) {
-                    for (int i = currentPathIndex; i < path.length; i++) {
-                        TileBase tile = path[i];
-                        if (tile.isCrossing()) {
-                            currentPathIndex = i;
-                            deadlockAttempts = 0;
-                            break;
-                        }
-                    }
+                    this.generateTilePath(this.tileMap, this.currentTile);
                 }
             } else {
                 deadlockAttempts = 0;
             }
-
-            try {
-                Thread.sleep(this.vehicleSpeed * 100L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
         this.currentTile.removeVehicleFromTile(this);
+
+        for (TileBase tileFromPath : this.path) {
+            tileFromPath.removeReservedVehicle(this);
+        }
+
         this.stop();
     }
+
 
     public TileBase[] getPath() {
         return path;
