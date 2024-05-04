@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import constants.ExclusionType;
 import constants.GridType;
 import constants.TerrainType;
-import model.Tile.TileBase;
-import model.Tile.TileMonitorImpl;
-import model.Tile.TileSemaphoreImpl;
-import model.Tile.TileSocketImpl;
+import model.Tile.*;
 import model.Vehicle;
+import model.VehicleSocketImpl;
 import view.Menu;
 import view.Simulation;
 
@@ -150,7 +148,7 @@ public class SimulationController {
                 tile = new TileSemaphoreImpl();
                 break;
             case SOCKTES:
-                tile = new TileSocketImpl();
+                tile = new VehicleSocketImpl();
                 break;
         }
 
