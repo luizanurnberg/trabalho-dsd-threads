@@ -40,37 +40,59 @@ public class Vehicle extends Thread {
             // Obtém as direções disponíveis para o próximo Tile
             List<String> availableDirections = entryTile.getDirections();
 
-            // Escolhe aleatoriamente uma das direções disponíveis
-            String chosenDirection = availableDirections.get(new Random().nextInt(availableDirections.size()));
+            // Embaralha a lista de direções para escolher aleatoriamente
+            Collections.shuffle(availableDirections);
 
-            // Obtém a próxima posição com base na direção escolhida
-            int nextX = entryTile.getPosX();
-            int nextY = entryTile.getPosY();
+            boolean foundValidDirection = false;
+            for (String chosenDirection : availableDirections) {
+                // Obtém a próxima posição com base na direção escolhida
+                int nextX = entryTile.getPosX();
+                int nextY = entryTile.getPosY();
 
-            switch (chosenDirection) {
-                case "UP":
-                    nextY--;
+                switch (chosenDirection) {
+                    case "UP":
+                        nextY--;
+                        break;
+                    case "DOWN":
+                        nextY++;
+                        break;
+                    case "LEFT":
+                        nextX--;
+                        break;
+                    case "RIGHT":
+                        nextX++;
+                        break;
+                }
+
+                // Verifica se as quatro posições ao redor do próximo tile estão livres
+                boolean isNextTileValid = true;
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        int nx = nextX + dx;
+                        int ny = nextY + dy;
+                        if (nx < 0 || nx >= tileMap[0].length || ny < 0 || ny >= tileMap.length || !tileMap[ny][nx].isAvaliable()) {
+                            isNextTileValid = false;
+                            break;
+                        }
+                    }
+                    if (!isNextTileValid) {
+                        break;
+                    }
+                }
+
+                if (isNextTileValid) {
+                    // Se todas as posições estiverem livres, avance para o próximo tile
+                    TileBase nextTile = tileMap[nextY][nextX];
+                    // Adiciona o próximo Tile ao percurso
+                    pathTiles.add(nextTile);
+                    entryTile = nextTile;
+                    foundValidDirection = true;
                     break;
-                case "DOWN":
-                    nextY++;
-                    break;
-                case "LEFT":
-                    nextX--;
-                    break;
-                case "RIGHT":
-                    nextX++;
-                    break;
+                }
             }
 
-            boolean isNextTileValid = nextX >= 0 && nextX < tileMap[0].length && nextY >= 0 && nextY < tileMap.length;
-
-            if (isNextTileValid) {
-                TileBase nextTile = tileMap[nextY][nextX];
-                // Adiciona o próximo Tile ao percurso
-                pathTiles.add(nextTile);
-                entryTile = nextTile;
-            } else {
-                // Caso contrário, encerra o loop
+            // Se não foi encontrada uma direção válida, encerra o loop
+            if (!foundValidDirection) {
                 break;
             }
         }

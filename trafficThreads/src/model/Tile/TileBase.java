@@ -142,7 +142,7 @@ public class TileBase {
         return TileBase.class.getClassLoader().getResource(path);
     }
 
-    protected boolean isAvaliable() {
+    public boolean isAvaliable() {
         return this.currentVehicle == null;
     }
 

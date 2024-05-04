@@ -81,20 +81,19 @@ public class SimulationController {
 
     public void runVehicles(int numSimultaneousVehicles, int rangeInsertion) {
         scheduler.scheduleAtFixedRate(() -> {
-            int numAvailableVehicles = availableVehicles.size();
-            int numRunningVehicles = Math.min(numSimultaneousVehicles, numAvailableVehicles - currentIndex);
+            removeFinishedVehicles();
 
-            for (int i = 0; i < numRunningVehicles; i++) {
-                Vehicle vehicle = availableVehicles.get(currentIndex + i);
-                runningVehicles.add(vehicle);
-                vehicle.start();
-            }
+            // Calcular quantos veículos podem ser adicionados
+            int vehiclesToAdd = numSimultaneousVehicles - runningVehicles.size();
 
-            currentIndex += numRunningVehicles;
-
-            if (currentIndex >= numAvailableVehicles) {
-                scheduler.shutdown();
-                removeFinishedVehicles();
+            for (int i = 0; i < vehiclesToAdd; i++) {
+                if (!availableVehicles.isEmpty()) {
+                    Vehicle newVehicle = availableVehicles.remove(0);
+                    runningVehicles.add(newVehicle);
+                    newVehicle.start();
+                } else {
+                    break;
+                }
             }
         }, 0, rangeInsertion, TimeUnit.SECONDS);
     }
