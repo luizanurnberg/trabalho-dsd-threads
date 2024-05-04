@@ -22,13 +22,13 @@ public class TileSemaphoreImpl extends TileBase {
 
     @Override
     public boolean moveVehicleToTile(Vehicle vehicle) {
-        if(!this.isAvaliable()) {
+        if (!this.isAvaliable()) {
             return false;
         }
 
         boolean hasAcquiredTile = this.tryAcquire();
 
-        if(hasAcquiredTile) {
+        if (hasAcquiredTile) {
             this.currentVehicle = vehicle;
             this.setTileCurrentImage();
 
@@ -36,7 +36,7 @@ public class TileSemaphoreImpl extends TileBase {
 
             this.semaphore.release();
 
-            vehicle.getCurrentTile().removeVehicleFromTile();
+            vehicle.getCurrentTile().removeVehicleFromTile(vehicle);
             vehicle.setCurrentTile(this);
             return true;
         }

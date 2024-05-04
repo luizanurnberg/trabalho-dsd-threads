@@ -27,7 +27,7 @@ public class TileMonitorImpl extends TileBase {
             this.setTileCurrentImage();
             System.out.println("Vehicle moved to tile: " + this);
 
-            vehicle.getCurrentTile().removeVehicleFromTile();
+            vehicle.getCurrentTile().removeVehicleFromTile(vehicle);
             vehicle.setCurrentTile(this);
             return true;
         } else {

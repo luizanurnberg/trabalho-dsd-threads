@@ -64,8 +64,11 @@ public class TileBase {
         return this.directions.size() > 1;
     }
 
-    public void removeVehicleFromTile() {
-        setCurrentVehicle(null);
+    public void removeVehicleFromTile(Vehicle vehicle) {
+        if (this.currentVehicle == vehicle) {
+            setCurrentVehicle(null);
+        }
+
         this.setTileCurrentImage();
     }
 
@@ -75,7 +78,13 @@ public class TileBase {
             String relativePath = "icons/" + imagePath;
 
             ImageIcon icon = new ImageIcon(getResource(relativePath));
-
+//            Remove later
+//            this.tileLabel.setFont(new Font("Serif", Font.BOLD, 10));
+//            if (this.reservedFor != null) {
+//                this.tileLabel.setText(String.valueOf(this.reservedFor.getId()));
+//            } else {
+//                this.tileLabel.setText(null);
+//            }
             this.tileLabel.setIcon(icon);
         }
 
@@ -85,6 +94,14 @@ public class TileBase {
 
             ImageIcon icon = new ImageIcon(getResource(relativePath));
 
+//            Remove later
+//            this.tileLabel.setFont(new Font("Serif", Font.PLAIN, 10));
+//            this.tileLabel.setIcon(null);
+//            if (this.currentVehicle != null) {
+//                this.tileLabel.setText(String.valueOf(this.currentVehicle.getId()));
+//            } else {
+//                this.tileLabel.setText(null);
+//            }
             this.tileLabel.setIcon(icon);
         }
     }
@@ -99,7 +116,7 @@ public class TileBase {
                 return true;
             }
         }
-        if (this.posX == tileMap.length - 1) {
+        if (this.posX == tileMap[0].length - 1) {
             if (directions.get(0).equals("LEFT")) {
                 return true;
             }
@@ -123,7 +140,7 @@ public class TileBase {
                 return true;
             }
         }
-        if (this.posX == tileMap.length) {
+        if (this.posX == tileMap[0].length - 1) {
             if (directions.get(0).equals("RIGHT")) {
                 return true;
             }

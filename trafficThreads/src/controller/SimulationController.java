@@ -19,14 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Integer.parseInt;
 
 public class SimulationController {
-    //  maybe pass constant to enum
     private static final String[] VEHICLE_IMAGE_PATHS = {
             "vehicle_jeep.png",
             "vehicle_kwid.png",
@@ -35,10 +32,7 @@ public class SimulationController {
     };
     private List<Vehicle> runningVehicles;
     private List<Vehicle> availableVehicles;
-
     Duration timeout;
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-
     private Simulation simulationPanel;
 
 
@@ -108,7 +102,7 @@ public class SimulationController {
                 simulationPanel.setVehiclesRunningLabel(String.valueOf(runningVehicles.size()));
                 simulationPanel.setVehiclesRemainingLabel(String.valueOf(availableVehicles.size()));
             }
-        }, 0, 5000);
+        }, 0, rangeInsertion * 100L);
     }
 
     private void removeFinishedVehicles() {
