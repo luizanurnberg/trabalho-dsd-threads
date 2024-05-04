@@ -211,8 +211,9 @@ public class Vehicle extends Thread {
 
     @Override
     public void run() {
-        while (currentPathIndex < path.length) {
-            clearLastTiles();
+        int deadlockAttempts = 0;
+
+        while (true) {
             TileBase nextTile = path[currentPathIndex];
 
             if (nextTile.isCrossing()) {
@@ -220,14 +221,36 @@ public class Vehicle extends Thread {
             } else {
                 moveVehicle(nextTile);
             }
+
+            if (currentPathIndex >= path.length) {
+                break;
+            }
+
+            // Verifica se houve deadlock e tentou mais de 3 vezes percorrer o caminho
+            if (nextTile == path[currentPathIndex] && nextTile.isCrossing()) {
+                deadlockAttempts++;
+                if (deadlockAttempts > 2) {
+                    for (int i = currentPathIndex; i < path.length; i++) {
+                        TileBase tile = path[i];
+                        if (tile.isCrossing()) {
+                            currentPathIndex = i;
+                            deadlockAttempts = 0;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                deadlockAttempts = 0;
+            }
+
+            try {
+                Thread.sleep(this.vehicleSpeed * 100L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         this.currentTile.removeVehicleFromTile(this);
-
-        for (TileBase tileFromPath : this.path) {
-            tileFromPath.removeReservedVehicle(this);
-        }
-
         this.stop();
     }
 
