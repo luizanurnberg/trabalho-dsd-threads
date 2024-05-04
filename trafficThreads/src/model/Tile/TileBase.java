@@ -43,6 +43,9 @@ public class TileBase {
             return false;
         }
 
+        if (this.currentVehicle != null && this.currentVehicle != vehicle) {
+            return false;
+        }
         this.setReserved(vehicle);
         return true;
     }

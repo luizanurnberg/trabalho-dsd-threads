@@ -109,11 +109,10 @@ public class Vehicle extends Thread {
 
         while (firstCrossingTile.isCrossing()) {
             crossingTiles.add(firstCrossingTile);
-
-            firstCrossingTile = this.path[currentTileIndex];
             currentTileIndex++;
+            firstCrossingTile = this.path[currentTileIndex];
         }
-
+        //crossingTiles.add(this.path[currentTileIndex]);
         ArrayList<TileBase> reservedTiles = new ArrayList<>();
 
         for (TileBase crossingTile : crossingTiles) {
