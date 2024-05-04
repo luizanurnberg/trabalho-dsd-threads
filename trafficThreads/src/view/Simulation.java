@@ -7,12 +7,27 @@ import java.awt.*;
 
 public class Simulation extends JFrame {
     private JPanel jpPainel;
+
+    private JPanel jContainerPanel;
     private JButton btnFinish;
+    private JLabel vehiclesRunningText;
+    private JLabel vehiclesRemainingText;
+    private JLabel vehiclesRunningLabel;
+    private JLabel vehiclesRemainingLabel;
+
     private TileBase[][] tilesGrid;
 
     public Simulation(TileBase[][] tilesGrid) {
         super("Simulation");
         this.tilesGrid = tilesGrid;
+    }
+
+    public void setVehiclesRunningLabel(String newValue) {
+        this.vehiclesRunningLabel.setText(newValue);
+    }
+
+    public void setVehiclesRemainingLabel(String newValue) {
+        this.vehiclesRemainingLabel.setText(newValue);
     }
 
     public void initializeSimulationFrame() {
@@ -21,6 +36,8 @@ public class Simulation extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
+        jContainerPanel = new JPanel();
+
         jpPainel = new JPanel(new GridLayout(tilesGrid.length, tilesGrid[0].length));
 
         jpPainel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -28,12 +45,21 @@ public class Simulation extends JFrame {
 
         plotImagesOnMap(this.tilesGrid, jpPainel);
 
-        btnFinish = new JButton("Finalizar");
         JPanel buttonPanel = new JPanel();
+
+        btnFinish = new JButton("Finalizar");
+
         buttonPanel.add(btnFinish);
+
+        buttonPanel.add(vehiclesRunningText);
+        buttonPanel.add(vehiclesRunningLabel);
+
+        buttonPanel.add(vehiclesRemainingText);
+        buttonPanel.add(vehiclesRemainingLabel);
 
         add(jpPainel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
         setVisible(true);
     }
 

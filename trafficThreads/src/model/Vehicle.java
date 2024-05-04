@@ -13,8 +13,6 @@ public class Vehicle extends Thread {
     private String imagePath;
     private int vehicleSpeed;
 
-    private TileBase[][] tileMap;
-
     public Vehicle(String imagePath, int vehicleSpeed) {
         this.imagePath = imagePath;
         this.vehicleSpeed = vehicleSpeed;
@@ -25,7 +23,10 @@ public class Vehicle extends Thread {
         this.path = tilePath;
         this.currentTile = tilePath[0];
         this.currentPathIndex = 0;
-        this.tileMap = tileMap;
+    }
+
+    public boolean isVehicleStopped() {
+        return currentPathIndex >= path.length;
     }
 
     protected TileBase[] generateTilePath(TileBase[][] tileMap) {
@@ -40,59 +41,37 @@ public class Vehicle extends Thread {
             // Obtém as direções disponíveis para o próximo Tile
             List<String> availableDirections = entryTile.getDirections();
 
-            // Embaralha a lista de direções para escolher aleatoriamente
-            Collections.shuffle(availableDirections);
+            // Escolhe aleatoriamente uma das direções disponíveis
+            String chosenDirection = availableDirections.get(new Random().nextInt(availableDirections.size()));
 
-            boolean foundValidDirection = false;
-            for (String chosenDirection : availableDirections) {
-                // Obtém a próxima posição com base na direção escolhida
-                int nextX = entryTile.getPosX();
-                int nextY = entryTile.getPosY();
+            // Obtém a próxima posição com base na direção escolhida
+            int nextX = entryTile.getPosX();
+            int nextY = entryTile.getPosY();
 
-                switch (chosenDirection) {
-                    case "UP":
-                        nextY--;
-                        break;
-                    case "DOWN":
-                        nextY++;
-                        break;
-                    case "LEFT":
-                        nextX--;
-                        break;
-                    case "RIGHT":
-                        nextX++;
-                        break;
-                }
-
-                // Verifica se as quatro posições ao redor do próximo tile estão livres
-                boolean isNextTileValid = true;
-                for (int dx = -1; dx <= 1; dx++) {
-                    for (int dy = -1; dy <= 1; dy++) {
-                        int nx = nextX + dx;
-                        int ny = nextY + dy;
-                        if (nx < 0 || nx >= tileMap[0].length || ny < 0 || ny >= tileMap.length || !tileMap[ny][nx].isAvaliable()) {
-                            isNextTileValid = false;
-                            break;
-                        }
-                    }
-                    if (!isNextTileValid) {
-                        break;
-                    }
-                }
-
-                if (isNextTileValid) {
-                    // Se todas as posições estiverem livres, avance para o próximo tile
-                    TileBase nextTile = tileMap[nextY][nextX];
-                    // Adiciona o próximo Tile ao percurso
-                    pathTiles.add(nextTile);
-                    entryTile = nextTile;
-                    foundValidDirection = true;
+            switch (chosenDirection) {
+                case "UP":
+                    nextY--;
                     break;
-                }
+                case "DOWN":
+                    nextY++;
+                    break;
+                case "LEFT":
+                    nextX--;
+                    break;
+                case "RIGHT":
+                    nextX++;
+                    break;
             }
 
-            // Se não foi encontrada uma direção válida, encerra o loop
-            if (!foundValidDirection) {
+            boolean isNextTileValid = nextX >= 0 && nextX < tileMap[0].length && nextY >= 0 && nextY < tileMap.length;
+
+            if (isNextTileValid) {
+                TileBase nextTile = tileMap[nextY][nextX];
+                // Adiciona o próximo Tile ao percurso
+                pathTiles.add(nextTile);
+                entryTile = nextTile;
+            } else {
+                // Caso contrário, encerra o loop
                 break;
             }
         }
@@ -124,52 +103,6 @@ public class Vehicle extends Thread {
         return entryTiles;
     }
 
-    protected ArrayList<TileBase> getNearbyCrossings(TileBase tile) {
-        ArrayList<TileBase> nearbyCrossings = new ArrayList<>();
-
-        TileBase tileNorth = tileMap[tile.getPosY() - 1][tile.getPosX()];
-        if (tileNorth.isCrossing()) {
-            nearbyCrossings.add(tileNorth);
-        }
-
-        TileBase tileSouth = tileMap[tile.getPosY() + 1][tile.getPosX()];
-        if (tileSouth.isCrossing()) {
-            nearbyCrossings.add(tileSouth);
-        }
-
-        TileBase tileEast = tileMap[tile.getPosY()][tile.getPosX() + 1];
-        if (tileEast.isCrossing()) {
-            nearbyCrossings.add(tileEast);
-        }
-
-        TileBase tileWest = tileMap[tile.getPosY()][tile.getPosX() - 1];
-        if (tileWest.isCrossing()) {
-            nearbyCrossings.add(tileWest);
-        }
-
-        TileBase tileNortheast = tileMap[tile.getPosY() - 1][tile.getPosX() + 1];
-        if (tileNortheast.isCrossing()) {
-            nearbyCrossings.add(tileNortheast);
-        }
-
-        TileBase tileNorthwest = tileMap[tile.getPosY() - 1][tile.getPosX() - 1];
-        if (tileNorthwest.isCrossing()) {
-            nearbyCrossings.add(tileNorthwest);
-        }
-
-        TileBase tileSoutheast = tileMap[tile.getPosY() + 1][tile.getPosX() + 1];
-        if (tileSoutheast.isCrossing()) {
-            nearbyCrossings.add(tileSoutheast);
-        }
-
-        TileBase tileSouthwest = tileMap[tile.getPosY() + 1][tile.getPosX() - 1];
-        if (tileSouthwest.isCrossing()) {
-            nearbyCrossings.add(tileSouthwest);
-        }
-
-        return nearbyCrossings;
-    }
-
     protected void resolveCrossing(TileBase firstCrossingTile) {
         ArrayList<TileBase> crossingTiles = new ArrayList<>();
         int currentTileIndex = this.currentPathIndex;
@@ -180,9 +113,6 @@ public class Vehicle extends Thread {
             firstCrossingTile = this.path[currentTileIndex];
             currentTileIndex++;
         }
-
-//        ArrayList<TileBase> nearbyCrossings = getNearbyCrossings(firstCrossingTile);
-//        nearbyCrossings.add(firstCrossingTile);
 
         ArrayList<TileBase> reservedTiles = new ArrayList<>();
 
@@ -236,6 +166,7 @@ public class Vehicle extends Thread {
         }
 
         this.currentTile.removeVehicleFromTile();
+        this.stop();
     }
 
     public TileBase[] getPath() {

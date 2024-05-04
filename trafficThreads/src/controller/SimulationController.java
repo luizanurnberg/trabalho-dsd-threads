@@ -1,8 +1,5 @@
 package controller;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import constants.ExclusionType;
 import constants.GridType;
 import constants.TerrainType;
@@ -17,10 +14,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
 
@@ -34,8 +35,12 @@ public class SimulationController {
     };
     private List<Vehicle> runningVehicles;
     private List<Vehicle> availableVehicles;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private int currentIndex = 0;
+
+    Duration timeout;
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private Simulation simulationPanel;
+
 
     public SimulationController() {
         runningVehicles = new ArrayList<>();
@@ -51,10 +56,12 @@ public class SimulationController {
             int vehicleSpeed
     ) {
         try {
+            timeout = Duration.ofSeconds(rangeInsertion);
+
             TileBase[][] tilesGrid = loadTilesFromFile(selectedGrid, exclusionType);
 
-            Simulation simulation = new Simulation(tilesGrid);
-            simulation.initializeSimulationFrame();
+            simulationPanel = new Simulation(tilesGrid);
+            simulationPanel.initializeSimulationFrame();
 
             createVehicles(numVehicles, tilesGrid, vehicleSpeed);
 
@@ -79,33 +86,41 @@ public class SimulationController {
         return VEHICLE_IMAGE_PATHS[index];
     }
 
-    public void runVehicles(int numSimultaneousVehicles, int rangeInsertion) {
-        scheduler.scheduleAtFixedRate(() -> {
-            removeFinishedVehicles();
+    private void addVehicles(int numSimultaneousVehicles) {
+        removeFinishedVehicles();
+        int numRunningVehicles = numSimultaneousVehicles - runningVehicles.size();
 
-            // Calcular quantos veículos podem ser adicionados
-            int vehiclesToAdd = numSimultaneousVehicles - runningVehicles.size();
-
-            for (int i = 0; i < vehiclesToAdd; i++) {
-                if (!availableVehicles.isEmpty()) {
-                    Vehicle newVehicle = availableVehicles.remove(0);
-                    runningVehicles.add(newVehicle);
-                    newVehicle.start();
-                } else {
-                    break;
-                }
+        for (int i = 0; i < numRunningVehicles; i++) {
+            if (!availableVehicles.isEmpty()) {
+                Vehicle vehicle = availableVehicles.remove(0);
+                runningVehicles.add(vehicle);
+                vehicle.start();
             }
-        }, 0, rangeInsertion, TimeUnit.SECONDS);
+
+        }
+    }
+
+    public void runVehicles(int numSimultaneousVehicles, int rangeInsertion) {
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                addVehicles(numSimultaneousVehicles);
+                simulationPanel.setVehiclesRunningLabel(String.valueOf(runningVehicles.size()));
+                simulationPanel.setVehiclesRemainingLabel(String.valueOf(availableVehicles.size()));
+            }
+        }, 0, 5000);
     }
 
     private void removeFinishedVehicles() {
-        List<Vehicle> finishedVehicles = new ArrayList<>();
+        List<Vehicle> finishedVehiclesToRemove = new ArrayList<>();
+
         for (Vehicle vehicle : runningVehicles) {
-            if (!vehicle.isAlive()) {
-                finishedVehicles.add(vehicle);
+            if (!vehicle.isAlive() || vehicle.isVehicleStopped()) {
+                finishedVehiclesToRemove.add(vehicle);
             }
         }
-        runningVehicles.removeAll(finishedVehicles);
+
+        runningVehicles.removeAll(finishedVehiclesToRemove);
     }
 
 
