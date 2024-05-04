@@ -49,6 +49,7 @@ public class TileBase {
     public boolean isCrossing() {
         return this.directions.size() > 1;
     }
+
     public void removeVehicleFromTile() {
         setCurrentVehicle(null);
         this.setTileCurrentImage();
@@ -130,7 +131,7 @@ public class TileBase {
         return TileBase.class.getClassLoader().getResource(path);
     }
 
-    protected boolean isAvaliable() {
+    public boolean isAvaliable() {
         return this.currentVehicle == null;
     }
 
