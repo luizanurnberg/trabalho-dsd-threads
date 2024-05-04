@@ -99,22 +99,22 @@ public class Vehicle extends Thread {
 
     @Override
     public void run() {
-        while (currentPathIndex < path.length) {
-            TileBase nextTile = path[currentPathIndex];
-            boolean vehicleMoved = nextTile.moveVehicleToTile(this);
+        try {
+            while (currentPathIndex < path.length) {
+                TileBase nextTile = path[currentPathIndex];
+                boolean vehicleMoved = nextTile.moveVehicleToTile(this);
 
-            if (vehicleMoved) {
-                currentPathIndex++;
-            }
+                if (vehicleMoved) {
+                    currentPathIndex++;
+                }
 
-            try {
                 Thread.sleep(this.vehicleSpeed * 100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }
 
-        this.currentTile.removeVehicleFromTile();
+            this.currentTile.removeVehicleFromTile();
+        } catch (InterruptedException e) {
+            System.out.println("Thread do veículo interrompida.");
+        }
     }
 
     public TileBase[] getPath() {
@@ -156,5 +156,9 @@ public class Vehicle extends Thread {
 
     public void setCurrentTile(TileBase tile) {
         this.currentTile = tile;
+    }
+
+    public void endVehicle() {
+        interrupt();
     }
 }

@@ -11,6 +11,7 @@ import model.Tile.TileMonitorImpl;
 import model.Tile.TileSemaphoreImpl;
 import model.Tile.TileSocketImpl;
 import model.Vehicle;
+import view.Menu;
 import view.Simulation;
 
 import java.io.BufferedReader;
@@ -32,8 +33,8 @@ public class SimulationController {
             "vehicle_audi.png",
             "vehicle_bmw.png"
     };
-    private List<Vehicle> runningVehicles;
-    private List<Vehicle> availableVehicles;
+    private static List<Vehicle> runningVehicles;
+    private static List<Vehicle> availableVehicles;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private int currentIndex = 0;
 
@@ -48,8 +49,9 @@ public class SimulationController {
             int numVehicles,
             int numSimultaneousVehicles,
             int rangeInsertion,
-            int vehicleSpeed
-    ) {
+            int vehicleSpeed,
+            Menu menu) {
+        menu.dispose();
         try {
             TileBase[][] tilesGrid = loadTilesFromFile(selectedGrid, exclusionType);
 
@@ -81,20 +83,22 @@ public class SimulationController {
 
     public void runVehicles(int numSimultaneousVehicles, int rangeInsertion) {
         scheduler.scheduleAtFixedRate(() -> {
-            int numAvailableVehicles = availableVehicles.size();
-            int numRunningVehicles = Math.min(numSimultaneousVehicles, numAvailableVehicles - currentIndex);
+            if(!Simulation.isSimulationFinished()) {
+                int numAvailableVehicles = availableVehicles.size();
+                int numRunningVehicles = Math.min(numSimultaneousVehicles, numAvailableVehicles - currentIndex);
 
-            for (int i = 0; i < numRunningVehicles; i++) {
-                Vehicle vehicle = availableVehicles.get(currentIndex + i);
-                runningVehicles.add(vehicle);
-                vehicle.start();
-            }
+                for (int i = 0; i < numRunningVehicles; i++) {
+                    Vehicle vehicle = availableVehicles.get(currentIndex + i);
+                    runningVehicles.add(vehicle);
+                    vehicle.start();
+                }
 
-            currentIndex += numRunningVehicles;
+                currentIndex += numRunningVehicles;
 
-            if (currentIndex >= numAvailableVehicles) {
-                scheduler.shutdown();
-                removeFinishedVehicles();
+                if (currentIndex >= numAvailableVehicles) {
+                    scheduler.shutdown();
+                    removeFinishedVehicles();
+                }
             }
         }, 0, rangeInsertion, TimeUnit.SECONDS);
     }
@@ -159,5 +163,15 @@ public class SimulationController {
         tile.setPosY(posY);
 
         return tile;
+    }
+
+    public static void end() {
+        // Encerre todos os veículos em execução
+        for (Vehicle vehicle : runningVehicles) {
+            vehicle.endVehicle(); // Certifique-se de implementar o método end() na classe Vehicle
+        }
+        // Limpe as listas de veículos
+        runningVehicles.clear();
+        availableVehicles.clear();
     }
 }

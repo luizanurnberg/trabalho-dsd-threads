@@ -1,18 +1,26 @@
 package view;
 
+import controller.SimulationController;
 import model.Tile.TileBase;
+import model.Vehicle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Simulation extends JFrame {
     private JPanel jpPainel;
     private JButton btnFinish;
     private TileBase[][] tilesGrid;
+    private static boolean simulationFinished = false;
+    private Menu menu;
+
 
     public Simulation(TileBase[][] tilesGrid) {
         super("Simulation");
         this.tilesGrid = tilesGrid;
+        this.menu = menu;
     }
 
     public void initializeSimulationFrame() {
@@ -31,10 +39,23 @@ public class Simulation extends JFrame {
         btnFinish = new JButton("Finalizar");
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(btnFinish);
+        btnFinish.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Encerre a simulação
+                SimulationController.end();
+                new Menu();
+                dispose();
+            }
+        });
 
         add(jpPainel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
         setVisible(true);
+    }
+
+    public static boolean isSimulationFinished() {
+        return simulationFinished;
     }
 
     private void plotImagesOnMap(TileBase[][] grid, JPanel jpPainel) {

@@ -74,7 +74,8 @@ public class Menu extends JFrame{
                     numberOfVehicles,
                     numberOfSimultaneousVehicles,
                     rangeInsertion,
-                    vehicleSpeed
+                    vehicleSpeed,
+                    this
             );
         }
     }
