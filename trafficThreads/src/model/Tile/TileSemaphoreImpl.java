@@ -21,26 +21,58 @@ public class TileSemaphoreImpl extends TileBase {
     }
 
     @Override
-    public boolean moveVehicleToTile(Vehicle vehicle) {
+    public boolean reserveTile(Vehicle vehicle) {
         if (!this.isAvaliable()) {
             return false;
         }
 
         boolean hasAcquiredTile = this.tryAcquire();
 
-        if (hasAcquiredTile) {
-            this.currentVehicle = vehicle;
-            this.setTileCurrentImage();
-
-            System.out.println("Vehicle moved to tile: " + this);
-
-            this.semaphore.release();
-
-            vehicle.getCurrentTile().removeVehicleFromTile(vehicle);
-            vehicle.setCurrentTile(this);
-            return true;
+        if (!hasAcquiredTile) {
+            return false;
         }
 
-        return false;
+        this.setReserved(vehicle);
+
+        if (this.reservedFor != null && this.reservedFor != vehicle) {
+            return false;
+        }
+
+        if (this.currentVehicle != null && this.currentVehicle != vehicle) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void removeReservedVehicle(Vehicle vehicle) {
+        if (reservedFor != null && reservedFor == vehicle) {
+            this.setReserved(null);
+        }
+        this.semaphore.release();
+    }
+
+    @Override
+    public boolean moveVehicleToTile(Vehicle vehicle) {
+        if (!this.isAvaliable()) {
+            return false;
+        }
+
+//        boolean hasAcquiredTile = this.tryAcquire();
+
+//        if (hasAcquiredTile) {
+        this.currentVehicle = vehicle;
+        this.setTileCurrentImage();
+
+//            System.out.println("Vehicle moved to tile: " + this);
+
+        vehicle.getCurrentTile().removeVehicleFromTile(vehicle);
+        vehicle.setCurrentTile(this);
+        this.semaphore.release();
+        return true;
+//        }
+
+//        return false;
     }
 }

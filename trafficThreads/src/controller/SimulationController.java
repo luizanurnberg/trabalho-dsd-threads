@@ -68,7 +68,7 @@ public class SimulationController {
     private void createVehicles(int numVehicles, TileBase[][] tilesGrid, int vehicleSpeed) {
         for (int i = 0; i < numVehicles; i++) {
             String imagePath = getRandomVehicleImagePath();
-            Vehicle vehicle = new Vehicle(imagePath, vehicleSpeed);
+            Vehicle vehicle = new Vehicle(imagePath);
             vehicle.setupVehicle(tilesGrid);
             availableVehicles.add(vehicle);
         }

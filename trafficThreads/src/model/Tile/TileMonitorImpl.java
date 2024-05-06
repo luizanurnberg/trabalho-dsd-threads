@@ -6,18 +6,18 @@ public class TileMonitorImpl extends TileBase {
     @Override
     public synchronized boolean reserveTile(Vehicle vehicle) {
         if (this.reservedFor != null && this.reservedFor != vehicle) {
+            this.setTileCurrentImage();
+            return false;
+        }
+
+        if (this.currentVehicle != null && this.currentVehicle != vehicle) {
+            this.setTileCurrentImage();
             return false;
         }
 
         this.setReserved(vehicle);
+        this.setTileCurrentImage();
         return true;
-    }
-
-    @Override
-    public synchronized void removeReservedVehicle(Vehicle vehicle) {
-        if (reservedFor != null && reservedFor == vehicle) {
-            this.setReserved(null);
-        }
     }
 
     @Override
@@ -25,13 +25,14 @@ public class TileMonitorImpl extends TileBase {
         if (this.isAvaliable()) {
             setCurrentVehicle(vehicle);
             this.setTileCurrentImage();
-            System.out.println("Vehicle moved to tile: " + this);
+//            System.out.println("Vehicle moved to tile: " + this);
 
             vehicle.getCurrentTile().removeVehicleFromTile(vehicle);
             vehicle.setCurrentTile(this);
             return true;
         } else {
-            System.out.println("Tile is occupied. Vehicle cannot move to tile: " + this);
+            this.setTileCurrentImage();
+//            System.out.println("Tile is occupied. Vehicle cannot move to tile: " + this);
             return false;
         }
     }

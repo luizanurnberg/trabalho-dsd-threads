@@ -3,6 +3,7 @@ package model.Tile;
 import model.Vehicle;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 public class TileBase {
@@ -46,6 +47,7 @@ public class TileBase {
         if (this.currentVehicle != null && this.currentVehicle != vehicle) {
             return false;
         }
+
         this.setReserved(vehicle);
         return true;
     }
@@ -54,6 +56,8 @@ public class TileBase {
         if (reservedFor != null && reservedFor == vehicle) {
             this.setReserved(null);
         }
+
+        this.setTileCurrentImage();
     }
 
     public void setReserved(Vehicle reserveFor) {
@@ -72,19 +76,21 @@ public class TileBase {
         this.setTileCurrentImage();
     }
 
-    protected void setTileCurrentImage() {
+    public void setTileCurrentImage() {
         if (this.currentVehicle == null) {
             String imagePath = this.getImagePath();
             String relativePath = "icons/" + imagePath;
 
             ImageIcon icon = new ImageIcon(getResource(relativePath));
-//            Remove later
-//            this.tileLabel.setFont(new Font("Serif", Font.BOLD, 10));
-//            if (this.reservedFor != null) {
-//                this.tileLabel.setText(String.valueOf(this.reservedFor.getId()));
-//            } else {
-//                this.tileLabel.setText(null);
-//            }
+
+            this.tileLabel.setFont(new Font("Serif", Font.BOLD, 8));
+
+            if (this.reservedFor != null) {
+                this.tileLabel.setText(formatThreadString(this.reservedFor.getName()));
+            } else {
+                this.tileLabel.setText(null);
+            }
+
             this.tileLabel.setIcon(icon);
         }
 
@@ -94,15 +100,30 @@ public class TileBase {
 
             ImageIcon icon = new ImageIcon(getResource(relativePath));
 
-//            Remove later
-//            this.tileLabel.setFont(new Font("Serif", Font.PLAIN, 10));
-//            this.tileLabel.setIcon(null);
-//            if (this.currentVehicle != null) {
-//                this.tileLabel.setText(String.valueOf(this.currentVehicle.getId()));
-//            } else {
-//                this.tileLabel.setText(null);
-//            }
+            this.tileLabel.setFont(new Font("Serif", Font.PLAIN, 8));
+
+            if (this.currentVehicle != null) {
+                this.tileLabel.setText(formatThreadString(this.currentVehicle.getName()));
+            } else {
+                this.tileLabel.setText(null);
+            }
+
             this.tileLabel.setIcon(icon);
+        }
+    }
+
+    //    REMOVE LATER
+    public static String formatThreadString(String input) {
+        String regex = "Thread-(\\d+)";
+
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            String dynamicNumber = matcher.group(1);
+            return dynamicNumber;
+        } else {
+            return input;
         }
     }
 

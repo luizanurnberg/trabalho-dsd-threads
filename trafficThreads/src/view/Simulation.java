@@ -32,7 +32,7 @@ public class Simulation extends JFrame {
 
     public void initializeSimulationFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 900);
+        setSize(1280, 1024);
         setLocationRelativeTo(null);
         setResizable(false);
 

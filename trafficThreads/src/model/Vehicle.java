@@ -6,44 +6,37 @@ import java.util.*;
 
 public class Vehicle extends Thread {
     private TileBase currentTile;
-    private TileBase[] path;
+    private ArrayList<TileBase> path = new ArrayList<>();
     private int currentPathIndex;
     private String imagePath;
     private int vehicleSpeed;
 
+    private int attempts = 0;
     private TileBase[][] tileMap;
 
-    public Vehicle(String imagePath, int vehicleSpeed) {
+    public Vehicle(String imagePath) {
         this.imagePath = imagePath;
-        this.vehicleSpeed = vehicleSpeed;
+        this.vehicleSpeed = generateRandomVehicleSpeed(50, 150);
     }
 
     public void setupVehicle(TileBase[][] tileMap) {
         this.tileMap = tileMap;
-        TileBase[] tilePath = generateTilePath(tileMap, null);
-        this.path = tilePath;
-        this.currentTile = tilePath[0];
-        this.currentPathIndex = 0;
     }
 
     public boolean isVehicleStopped() {
-        return currentPathIndex >= path.length;
+        return this.path.isEmpty();
     }
 
-    protected TileBase[] generateTilePath(TileBase[][] tileMap, TileBase newEntryTile) {
-        List<TileBase> pathTiles = new ArrayList<>();
+    protected ArrayList<TileBase> generateTilePath(TileBase[][] tileMap) {
+        ArrayList<TileBase> pathTiles = new ArrayList<>();
         LinkedList<TileBase> recentTiles = new LinkedList<>();
 
-        // Seleciona aleatoriamente um ponto de entrada
-        TileBase entryTile = newEntryTile != null ? newEntryTile : getRandomEntryTile(tileMap);
+        TileBase entryTile = getRandomEntryTile(tileMap);
         pathTiles.add(entryTile);
 
-        // Enquanto não alcançar um ponto de saída
         while (!entryTile.isExitTile(tileMap) && pathTiles.size() < tileMap.length * tileMap[0].length) {
-            // Obtém as direções disponíveis para o próximo Tile
             List<String> availableDirections = entryTile.getDirections();
 
-            // Remove os Tiles recentes do mapa de direções disponíveis
             List<String> filteredDirections = new ArrayList<>(availableDirections);
             for (TileBase recentTile : recentTiles) {
                 Iterator<String> iterator = filteredDirections.iterator();
@@ -55,22 +48,17 @@ public class Vehicle extends Thread {
                 }
             }
 
-            // Se todas as direções levam a Tiles recentes, interrompe o loop
             if (filteredDirections.isEmpty()) {
                 break;
             }
 
-            // Escolhe aleatoriamente uma das direções disponíveis
             String chosenDirection = filteredDirections.get(new Random().nextInt(filteredDirections.size()));
 
-            // Adiciona o Tile atual à lista de Tiles recentes
             recentTiles.addFirst(entryTile);
-            // Mantém apenas os últimos 4 Tiles recentes
             if (recentTiles.size() > 4) {
                 recentTiles.removeLast();
             }
 
-            // Obtém a próxima posição com base na direção escolhida
             int nextX = entryTile.getPosX();
             int nextY = entryTile.getPosY();
 
@@ -93,20 +81,16 @@ public class Vehicle extends Thread {
 
             if (isNextTileValid) {
                 TileBase nextTile = tileMap[nextY][nextX];
-                // Adiciona o próximo Tile ao percurso
                 pathTiles.add(nextTile);
                 entryTile = nextTile;
             } else {
-                // Caso contrário, encerra o loop
                 break;
             }
         }
 
-        // Converte a lista de Tiles para um array e retorna
-        return pathTiles.toArray(new TileBase[0]);
+        return pathTiles;
     }
 
-    // Verifica se a direção leva ao Tile recente
     private boolean leadsToTile(String direction, TileBase currentTile, TileBase recentTile) {
         int nextX = currentTile.getPosX();
         int nextY = currentTile.getPosY();
@@ -153,21 +137,29 @@ public class Vehicle extends Thread {
         return entryTiles;
     }
 
-    protected void resolveCrossing(TileBase firstCrossingTile) {
+    private ArrayList<TileBase> findCrossingTiles(TileBase currentTile) {
         ArrayList<TileBase> crossingTiles = new ArrayList<>();
         int currentTileIndex = this.currentPathIndex;
 
-        while (firstCrossingTile.isCrossing()) {
-            crossingTiles.add(firstCrossingTile);
+        while (currentTile.isCrossing()) {
+            crossingTiles.add(currentTile);
             currentTileIndex++;
-            firstCrossingTile = this.path[currentTileIndex];
+            currentTile = this.path.get(currentTileIndex);
         }
 
-        crossingTiles.add(this.path[currentTileIndex]);
+        crossingTiles.add(this.path.get(currentTileIndex));
 
+        return crossingTiles;
+    }
+
+    protected ArrayList<TileBase> reserveCrossingTiles(ArrayList<TileBase> crossingTiles) {
         ArrayList<TileBase> reservedTiles = new ArrayList<>();
 
-        for (TileBase crossingTile : crossingTiles) {
+        ArrayList<TileBase> tilesToReserve = (ArrayList<TileBase>) crossingTiles.clone();
+
+        tilesToReserve.sort(Comparator.comparing(Object::toString));
+
+        for (TileBase crossingTile : tilesToReserve) {
             boolean wasTileReserved = crossingTile.reserveTile(this);
 
             if (wasTileReserved) {
@@ -175,84 +167,134 @@ public class Vehicle extends Thread {
             }
         }
 
-        if (reservedTiles.size() != crossingTiles.size()) {
+        return reservedTiles;
+    }
+
+    protected boolean resolveCrossing(TileBase firstCrossingTile) {
+        boolean isCrossingResolved = false;
+
+        ArrayList<TileBase> crossingTiles = findCrossingTiles(firstCrossingTile);
+
+        boolean isLastPathOccupied = !crossingTiles.get(crossingTiles.size() - 1).isAvaliable();
+
+        if (isLastPathOccupied) {
+            return false;
+        }
+
+        ArrayList<TileBase> reservedTiles = reserveCrossingTiles(crossingTiles);
+
+        boolean hasVehicleReservedAllCrossing = reservedTiles.size() == crossingTiles.size();
+
+        if (!hasVehicleReservedAllCrossing) {
             for (TileBase tileToUnreserve : reservedTiles) {
                 tileToUnreserve.removeReservedVehicle(this);
+                tileToUnreserve.setTileCurrentImage();
             }
-        } else {
-            for (TileBase crossingTile : reservedTiles) {
+        }
+
+        if (hasVehicleReservedAllCrossing) {
+            for (TileBase crossingTile : crossingTiles) {
                 moveVehicle(crossingTile);
+
+                try {
+                    this.sleep(this.vehicleSpeed);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             for (TileBase crossingTile : reservedTiles) {
                 crossingTile.removeReservedVehicle(this);
             }
+
+            isCrossingResolved = true;
         }
+
+        if (!isCrossingResolved) {
+            int vehicleSleepSpeed = generateRandomVehicleSpeed(400, 1500);
+
+            try {
+                this.sleep(vehicleSleepSpeed);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return isCrossingResolved;
     }
+
 
     protected void moveVehicle(TileBase tileToMove) {
-        boolean vehicleMoved = tileToMove.moveVehicleToTile(this);
-
-        if (vehicleMoved) {
-            this.currentPathIndex++;
-        }
+        boolean vehicleMoved;
 
         try {
-            Thread.sleep(this.vehicleSpeed * 100L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            vehicleMoved = tileToMove.moveVehicleToTile(this);
+
+            if (vehicleMoved) {
+                this.attempts = 0;
+                this.path.remove(0);
+            }
+        } catch (Exception error) {
+            System.out.println(error);
         }
     }
 
+    public static int generateRandomVehicleSpeed(int minMs, int maxMs) {
+        Random random = new Random();
+        int minTime = minMs;
+        int maxTime = maxMs;
 
-    private void clearLastTiles() {
-        int lastTiles = this.path.length - this.currentPathIndex;
-        for (int i = 0; i < lastTiles; i++) {
-            this.path[i].removeReservedVehicle(this);
-        }
+        int randomTime = random.nextInt((maxTime - minTime) + 1) + minTime;
+
+        return randomTime;
+    }
+
+    private void setupVehiclePath() {
+        ArrayList<TileBase> tilePath = generateTilePath(tileMap);
+        this.currentTile = tilePath.get(0);
+        this.currentPathIndex = 0;
+        this.path = tilePath;
     }
 
     @Override
     public void run() {
-        int deadlockAttempts = 0;
+        setupVehiclePath();
 
-        while (true) {
-            TileBase nextTile = path[currentPathIndex];
+        while (!this.path.isEmpty()) {
+            if (attempts >= 400) {
+                attempts = 0;
+            }
+
+            TileBase nextTile = path.get(0);
+
+            boolean moved = true;
 
             if (nextTile.isCrossing()) {
-                resolveCrossing(nextTile);
+                moved = resolveCrossing(nextTile);
             } else {
                 moveVehicle(nextTile);
             }
 
-            if (currentPathIndex >= path.length) {
-                break;
+            if (!moved) {
+                attempts++;
             }
 
-            clearLastTiles();
+            nextTile.setTileCurrentImage();
 
-            // Verifica se houve deadlock e tentou mais de 3 vezes percorrer o caminho
-            if (nextTile == path[currentPathIndex] && nextTile.isCrossing()) {
-                deadlockAttempts++;
-                if (deadlockAttempts > 2) {
-                    this.generateTilePath(this.tileMap, this.currentTile);
-                }
-            } else {
-                deadlockAttempts = 0;
+            try {
+                this.sleep(this.vehicleSpeed);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
 
         this.currentTile.removeVehicleFromTile(this);
 
-        for (TileBase tileFromPath : this.path) {
-            tileFromPath.removeReservedVehicle(this);
-        }
-
+        System.out.println("Vehicle finished path: " + this.getName());
         this.stop();
     }
 
-
-    public TileBase[] getPath() {
+    public ArrayList<TileBase> getPath() {
         return path;
     }
 
@@ -280,7 +322,7 @@ public class Vehicle extends Thread {
         this.imagePath = imagePath;
     }
 
-    public void setPath(TileBase[] newPath) {
+    public void setPath(ArrayList<TileBase> newPath) {
         this.path = newPath;
         this.currentPathIndex = 0;
     }
