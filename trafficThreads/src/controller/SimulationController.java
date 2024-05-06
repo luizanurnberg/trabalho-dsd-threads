@@ -46,8 +46,7 @@ public class SimulationController {
             ExclusionType exclusionType,
             int numVehicles,
             int numSimultaneousVehicles,
-            int rangeInsertion,
-            int vehicleSpeed
+            int rangeInsertion
     ) {
         try {
             timeout = Duration.ofSeconds(rangeInsertion);
@@ -57,7 +56,7 @@ public class SimulationController {
             simulationPanel = new Simulation(tilesGrid);
             simulationPanel.initializeSimulationFrame();
 
-            createVehicles(numVehicles, tilesGrid, vehicleSpeed);
+            createVehicles(numVehicles, tilesGrid);
 
             runVehicles(numSimultaneousVehicles, rangeInsertion);
         } catch (IOException e) {
@@ -65,7 +64,7 @@ public class SimulationController {
         }
     }
 
-    private void createVehicles(int numVehicles, TileBase[][] tilesGrid, int vehicleSpeed) {
+    private void createVehicles(int numVehicles, TileBase[][] tilesGrid) {
         for (int i = 0; i < numVehicles; i++) {
             String imagePath = getRandomVehicleImagePath();
             Vehicle vehicle = new Vehicle(imagePath);

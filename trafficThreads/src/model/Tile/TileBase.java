@@ -4,7 +4,10 @@ import model.Vehicle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.Random;
 
 public class TileBase {
     protected List<String> directions;
@@ -14,6 +17,7 @@ public class TileBase {
     protected int posY;
     protected JLabel tileLabel;
     protected Vehicle reservedFor;
+
 
     public int getPosX() {
         return posX;
@@ -37,6 +41,40 @@ public class TileBase {
 
     public void setTileLabel(JLabel tileLabel) {
         this.tileLabel = tileLabel;
+        this.tileLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                paintPath();
+            }
+        });
+    }
+
+    private void paintPath() {
+        if (this.reservedFor != null) {
+            this.tileLabel.setFont(new Font("Serif", Font.PLAIN, 8));
+            this.tileLabel.setForeground(Color.GREEN);
+            this.tileLabel.setText(formatThreadString(this.reservedFor.getName()));
+        }
+
+        if (this.currentVehicle != null) {
+            Color color = getRandomColor();
+            for (TileBase tile : this.currentVehicle.getPath()) {
+                JLabel label = tile.getTileLabel();
+//                if (label.getBackground() == null) {
+                label.setBackground(color);
+//                } else {
+//                    label.setBackground(null);
+//                }
+            }
+        }
+    }
+
+    private static Color getRandomColor() {
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+        return new Color(red, green, blue);
     }
 
     public boolean reserveTile(Vehicle vehicle) {
@@ -84,6 +122,7 @@ public class TileBase {
             ImageIcon icon = new ImageIcon(getResource(relativePath));
 
             this.tileLabel.setFont(new Font("Serif", Font.BOLD, 8));
+            this.tileLabel.setForeground(Color.RED);
 
             if (this.reservedFor != null) {
                 this.tileLabel.setText(formatThreadString(this.reservedFor.getName()));

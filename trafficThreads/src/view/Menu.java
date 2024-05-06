@@ -1,6 +1,5 @@
 package view;
 
-import com.sun.tools.javac.Main;
 import constants.ExclusionType;
 import constants.GridType;
 import controller.SimulationController;
@@ -9,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class Menu extends JFrame{
+public class Menu extends JFrame {
     private JPanel jpPainel;
     private JLabel lbMenu;
     private JLabel lbNumberVehicles;
@@ -27,12 +26,10 @@ public class Menu extends JFrame{
     private JRadioButton rbSemaphore;
     private JRadioButton rbMessageExchange;
     private JButton btnStart;
-    private JTextField tfVehicleSpeed;
-    private JLabel lbVehicleSpeed;
     private ButtonGroup gridGroup;
     private ButtonGroup exclusionTypeGroup;
 
-    public Menu(){
+    public Menu() {
         super.setSize(new Dimension(600, 600));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(this.jpPainel);
@@ -55,8 +52,8 @@ public class Menu extends JFrame{
     }
 
     private void onPressStartHandler() {
-        if(!validateInputs()) {
-            JOptionPane.showMessageDialog(null,"Campos em branco, favor preencher!");
+        if (!validateInputs()) {
+            JOptionPane.showMessageDialog(null, "Campos em branco, favor preencher!");
         } else {
             GridType selectedGrid = getSelectedGrid();
             ExclusionType exclusionType = getExclusionType();
@@ -64,7 +61,6 @@ public class Menu extends JFrame{
             int numberOfVehicles = getNumberVehicles();
             int numberOfSimultaneousVehicles = getNumberSimultaneousVehicles();
             int rangeInsertion = getRangeInsertion();
-            int vehicleSpeed = getVehicleSpeed();
 
             SimulationController simulationController = new SimulationController();
 
@@ -73,18 +69,16 @@ public class Menu extends JFrame{
                     exclusionType,
                     numberOfVehicles,
                     numberOfSimultaneousVehicles,
-                    rangeInsertion,
-                    vehicleSpeed
+                    rangeInsertion
             );
         }
     }
 
     private boolean validateInputs() {
         if (
-            tfNumberVehicles.getText().isEmpty() ||
-            tfNumberSimultaneousVehicles.getText().isEmpty() ||
-            tfRangeInsertion.getText().isEmpty() ||
-            tfVehicleSpeed.getText().isEmpty()
+                tfNumberVehicles.getText().isEmpty() ||
+                        tfNumberSimultaneousVehicles.getText().isEmpty() ||
+                        tfRangeInsertion.getText().isEmpty()
         ) {
             return false;
         }
@@ -116,10 +110,6 @@ public class Menu extends JFrame{
         }
 
         return null;
-    }
-
-    public int getVehicleSpeed() {
-        return Integer.parseInt(tfVehicleSpeed.getText());
     }
 
     public int getNumberVehicles() {

@@ -177,9 +177,9 @@ public class Vehicle extends Thread {
 
         boolean isLastPathOccupied = !crossingTiles.get(crossingTiles.size() - 1).isAvaliable();
 
-        if (isLastPathOccupied) {
-            return false;
-        }
+//        if (isLastPathOccupied) {
+//            return false;
+//        }
 
         ArrayList<TileBase> reservedTiles = reserveCrossingTiles(crossingTiles);
 
