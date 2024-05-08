@@ -3,6 +3,7 @@ package view;
 import constants.ExclusionType;
 import constants.GridType;
 import controller.SimulationController;
+import model.SimulationParams;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,15 +63,16 @@ public class Menu extends JFrame {
             int numberOfSimultaneousVehicles = getNumberSimultaneousVehicles();
             int rangeInsertion = getRangeInsertion();
 
-            SimulationController simulationController = new SimulationController();
-
-            simulationController.startSimulation(
+            SimulationParams simulationParams = new SimulationParams(
                     selectedGrid,
                     exclusionType,
                     numberOfVehicles,
                     numberOfSimultaneousVehicles,
                     rangeInsertion
             );
+
+            SimulationController simulationController = new SimulationController(simulationParams);
+            simulationController.startSimulation();
         }
     }
 

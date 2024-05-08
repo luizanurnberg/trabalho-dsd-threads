@@ -3,18 +3,19 @@ package controller;
 import constants.ExclusionType;
 import constants.GridType;
 import constants.TerrainType;
+import model.SimulationParams;
 import model.Tile.TileBase;
 import model.Tile.TileMonitorImpl;
 import model.Tile.TileSemaphoreImpl;
 import model.Tile.TileSocketImpl;
 import model.Vehicle;
 import view.Simulation;
+import view.SimulationMeshTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -32,42 +33,53 @@ public class SimulationController {
     };
     private List<Vehicle> runningVehicles;
     private List<Vehicle> availableVehicles;
-    Duration timeout;
     private Simulation simulationPanel;
+    private SimulationParams simulationParams;
 
+    private int rangeInsertion;
 
-    public SimulationController() {
-        runningVehicles = new ArrayList<>();
-        availableVehicles = new ArrayList<>();
+    public Simulation getSimulationPanel() {
+        return simulationPanel;
     }
 
-    public void startSimulation(
-            GridType selectedGrid,
-            ExclusionType exclusionType,
-            int numVehicles,
-            int numSimultaneousVehicles,
-            int rangeInsertion
-    ) {
+    public SimulationController(SimulationParams simulationParams) {
+        runningVehicles = new ArrayList<>();
+        availableVehicles = new ArrayList<>();
+
+        this.simulationParams = simulationParams;
+    }
+
+
+    public void startSimulation() {
         try {
-            timeout = Duration.ofSeconds(rangeInsertion);
+            this.rangeInsertion = simulationParams.getRangeInsertion();
 
-            TileBase[][] tilesGrid = loadTilesFromFile(selectedGrid, exclusionType);
+            TileBase[][] tilesGrid = loadTilesFromFile(simulationParams.getSelectedGrid(), simulationParams.getExclusionType());
 
-            simulationPanel = new Simulation(tilesGrid);
+            simulationPanel = new Simulation(tilesGrid, simulationParams);
             simulationPanel.initializeSimulationFrame();
 
-            createVehicles(numVehicles, tilesGrid);
-
-            runVehicles(numSimultaneousVehicles, rangeInsertion);
+            createVehicles(simulationParams.getNumberOfVehicles(), tilesGrid);
+            runVehicles(simulationParams.getNumberOfSimultaneousVehicles());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public void updateUI(TileBase tile) {
+        this.getSimulationMeshTable().fireTableCellUpdated(tile.getPosY(), tile.getPosX());
+        this.getSimulationMeshTable().fireTableDataChanged();
+        this.getSimulationPanel().getJpMeshContainer().updateUI();
+    }
+
+    public SimulationMeshTable getSimulationMeshTable() {
+        return (SimulationMeshTable) this.getSimulationPanel().getTbTileMap().getModel();
+    }
+
     private void createVehicles(int numVehicles, TileBase[][] tilesGrid) {
         for (int i = 0; i < numVehicles; i++) {
             String imagePath = getRandomVehicleImagePath();
-            Vehicle vehicle = new Vehicle(imagePath);
+            Vehicle vehicle = new Vehicle(imagePath, this);
             vehicle.setupVehicle(tilesGrid);
             availableVehicles.add(vehicle);
         }
@@ -89,11 +101,10 @@ public class SimulationController {
                 runningVehicles.add(vehicle);
                 vehicle.start();
             }
-
         }
     }
 
-    public void runVehicles(int numSimultaneousVehicles, int rangeInsertion) {
+    public void runVehicles(int numSimultaneousVehicles) {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -101,7 +112,7 @@ public class SimulationController {
                 simulationPanel.setVehiclesRunningLabel(String.valueOf(runningVehicles.size()));
                 simulationPanel.setVehiclesRemainingLabel(String.valueOf(availableVehicles.size()));
             }
-        }, 0, rangeInsertion * 100L);
+        }, 0, this.rangeInsertion * 100L);
     }
 
     private void removeFinishedVehicles() {
@@ -162,6 +173,7 @@ public class SimulationController {
 
         tile.setDirections(terrainType.getDirections());
         tile.setImagePath(terrainType.getImagePath());
+        tile.setTileCurrentImage(terrainType.getImagePath());
         tile.setPosX(posX);
         tile.setPosY(posY);
 
