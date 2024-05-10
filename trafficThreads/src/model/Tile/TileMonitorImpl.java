@@ -11,17 +11,20 @@ public class TileMonitorImpl extends TileBase {
 
     @Override
     public boolean tryAcquire() {
+        boolean acquired = false;
         try {
-            return this.monitor.tryLock(generateRandomCooldown(1000, 2000), TimeUnit.MILLISECONDS);
+            acquired = this.monitor.tryLock(generateRandomCooldown(1000, 2000), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.out.println(e.getStackTrace());
-            return false;
         }
+        return acquired;
     }
 
     @Override
     public void release() {
-        this.monitor.unlock();
+        try {
+            this.monitor.unlock();
+        } catch (Exception e) { }
     }
 
     @Override
