@@ -12,6 +12,7 @@ public class Vehicle extends Thread {
     protected int vehicleSpeed;
     protected TileBase[][] tileMap;
     protected SimulationController simulationController;
+    protected boolean ended;
 
     public Vehicle(String imagePath, SimulationController simulationController) {
         this.imagePath = imagePath;
@@ -96,7 +97,7 @@ public class Vehicle extends Thread {
         try {
             this.sleep(this.vehicleSpeed);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
         }
     }
 
@@ -142,23 +143,25 @@ public class Vehicle extends Thread {
 
     @Override
     public void run() {
-        while (!path.isEmpty()) {
-            int nextRoadIndex = 0;
+        while(!ended) {
+            while (!path.isEmpty()) {
+                int nextRoadIndex = 0;
 
-            if (path.get(nextRoadIndex).isCrossing()) {
-                resolveCrossing();
-            } else {
-                TileBase road = this.path.remove(nextRoadIndex);
-                this.moveVehicle(road, true, false);
+                if (path.get(nextRoadIndex).isCrossing()) {
+                    resolveCrossing();
+                } else {
+                    TileBase road = this.path.remove(nextRoadIndex);
+                    this.moveVehicle(road, true, false);
+                }
             }
+
+            this.currentTile.removeVehicle();
+            this.simulationController.updateUI(this.currentTile);
+            this.currentTile.release();
+
+            System.out.println("Vehicle finished path: " + this.getName());
+            this.endVehicle();
         }
-
-        this.currentTile.removeVehicle();
-        this.simulationController.updateUI(this.currentTile);
-        this.currentTile.release();
-
-        System.out.println("Vehicle finished path: " + this.getName());
-        this.stop();
     }
 
     public static int generateRandomVehicleSpeed(int minMs, int maxMs) {
@@ -283,5 +286,11 @@ public class Vehicle extends Thread {
         }
 
         return entryTiles;
+    }
+
+    public void endVehicle() {
+        this.ended = true;
+        this.stop();
+        this.interrupt();
     }
 }

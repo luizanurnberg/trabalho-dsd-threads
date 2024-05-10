@@ -1,5 +1,6 @@
 package view;
 
+import controller.SimulationController;
 import model.SimulationParams;
 import model.Tile.TileBase;
 
@@ -18,11 +19,13 @@ public class Simulation extends JFrame {
     private JTable tbTileMap;
     private SimulationParams simulationParams;
     private TileBase[][] tilesGrid;
+    private SimulationController simulationController;
 
-    public Simulation(TileBase[][] tilesGrid, SimulationParams simulationParams) {
+    public Simulation(TileBase[][] tilesGrid, SimulationParams simulationParams, SimulationController simulationController) {
         super("Simulation");
         this.tilesGrid = tilesGrid;
         this.simulationParams = simulationParams;
+        this.simulationController = simulationController;
     }
 
     public void setVehiclesRunningLabel(String newValue) {
@@ -83,6 +86,11 @@ public class Simulation extends JFrame {
 
         add(tbTileMap, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        btnFinish.addActionListener(e -> {
+            this.simulationController.end();
+            dispose();
+        });
 
         setVisible(true);
     }

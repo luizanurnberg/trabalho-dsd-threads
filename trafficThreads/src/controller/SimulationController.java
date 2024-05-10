@@ -56,7 +56,7 @@ public class SimulationController {
 
             TileBase[][] tilesGrid = loadTilesFromFile(simulationParams.getSelectedGrid(), simulationParams.getExclusionType());
 
-            simulationPanel = new Simulation(tilesGrid, simulationParams);
+            simulationPanel = new Simulation(tilesGrid, simulationParams, this);
             simulationPanel.initializeSimulationFrame();
 
             createVehicles(simulationParams.getNumberOfVehicles(), tilesGrid);
@@ -178,5 +178,17 @@ public class SimulationController {
         tile.setPosY(posY);
 
         return tile;
+    }
+
+    public void end() {
+        for (Vehicle vehicle : runningVehicles) {
+            vehicle.endVehicle();
+        }
+        for (Vehicle vehicle : availableVehicles) {
+            vehicle.endVehicle();
+        }
+
+        runningVehicles.clear();
+        availableVehicles.clear();
     }
 }
