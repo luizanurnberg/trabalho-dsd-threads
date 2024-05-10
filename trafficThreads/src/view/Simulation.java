@@ -53,7 +53,7 @@ public class Simulation extends JFrame {
 
     public void initializeSimulationFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1280, 1024);
+        setSize(600, 600);
         setResizable(false);
         setLocationRelativeTo(null);
 
@@ -62,21 +62,31 @@ public class Simulation extends JFrame {
         meshTableRender();
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         btnFinish = new JButton("Finalizar");
+        btnFinish.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(btnFinish);
 
-        buttonPanel.add(vehiclesRunningText);
-        buttonPanel.add(vehiclesRunningLabel);
+        JPanel vehiclesRunningPanel = new JPanel();
+        vehiclesRunningPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        vehiclesRunningPanel.add(vehiclesRunningText);
+        vehiclesRunningPanel.add(vehiclesRunningLabel);
+        buttonPanel.add(vehiclesRunningPanel);
 
-        buttonPanel.add(vehiclesRemainingText);
-        buttonPanel.add(vehiclesRemainingLabel);
+        JPanel vehiclesRemainingPanel = new JPanel();
+        vehiclesRemainingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        vehiclesRemainingPanel.add(vehiclesRemainingText);
+        vehiclesRemainingPanel.add(vehiclesRemainingLabel);
+        buttonPanel.add(vehiclesRemainingPanel);
 
         add(tbTileMap, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
     }
+
 
     public JPanel getJpMeshContainer() {
         return jpMeshContainer;

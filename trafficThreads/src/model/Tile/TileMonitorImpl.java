@@ -2,69 +2,33 @@ package model.Tile;
 
 import model.Vehicle;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class TileMonitorImpl extends TileBase {
+    private final Lock monitor = new ReentrantLock();
+
     @Override
     public boolean tryAcquire() {
-        return false;
+        try{
+            return this.monitor.tryLock(500, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace());
+            return false;
+        }
     }
 
     @Override
     public void release() {
-
+        this.monitor.unlock();
     }
 
     @Override
     public void addVehicle(Vehicle vehicle) {
+        synchronized (this) {
+            this.vehicle = vehicle;
+            this.setTileCurrentImage();
+        }
     }
-
-//    @Override
-//    public synchronized boolean reserveTile() {
-////        if (this.reservedFor != null && this.reservedFor != vehicle) {
-////            this.setTileCurrentImage();
-////            return false;
-////        }
-////
-////        if (this.currentVehicle != null && this.currentVehicle != vehicle) {
-////            this.setTileCurrentImage();
-////            return false;
-////        }
-////
-////        this.setReserved(vehicle);
-////        this.setTileCurrentImage();
-////        return true;
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean tryAcquire() {
-//        return false;
-//    }
-//
-//    @Override
-//    public void release() {
-//
-//    }
-//
-//    @Override
-//    public synchronized boolean moveVehicleToTile(Vehicle vehicle) {
-//        if (this.isAvaliable()) {
-//            setCurrentVehicle(vehicle);
-//            this.setTileCurrentImage();
-////            System.out.println("Vehicle moved to tile: " + this);
-//
-//            vehicle.getCurrentTile().removeVehicleFromTile(vehicle);
-//            vehicle.setCurrentTile(this);
-//            return true;
-//        } else {
-//            this.setTileCurrentImage();
-////            System.out.println("Tile is occupied. Vehicle cannot move to tile: " + this);
-//            return false;
-//        }
-//    }
-//
-//    @Override
-//    public boolean moveVehicleToCrossing(Vehicle vehicle) {
-//        return false;
-//    }
-
 }
