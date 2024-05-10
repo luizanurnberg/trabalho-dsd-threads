@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -87,7 +88,7 @@ public abstract class TileBase {
 
     public abstract boolean tryAcquire();
 
-    public abstract void release();
+    public abstract void release() throws IOException;
 
     public void addVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;

@@ -144,7 +144,7 @@ public class SimulationController {
             String[] values = reader.readLine().split("\\s+");
 
             for (int x = 0; x < values.length; x++) {
-                TileBase tile = createTile(values[x], x, y, exclusionType);
+                TileBase tile = createTile(values[x], x, y, exclusionType, x);
                 grid[y][x] = tile;
             }
         }
@@ -153,7 +153,7 @@ public class SimulationController {
         return grid;
     }
 
-    private TileBase createTile(String meshValue, int posX, int posY, ExclusionType exclusionType) {
+    private TileBase createTile(String meshValue, int posX, int posY, ExclusionType exclusionType, int serverPort) {
         TileBase tile = null;
 
         switch (exclusionType) {
@@ -164,7 +164,7 @@ public class SimulationController {
                 tile = new TileSemaphoreImpl();
                 break;
             case SOCKTES:
-                tile = new TileSocketImpl();
+                tile = new TileSocketImpl(serverPort);
                 break;
         }
 
