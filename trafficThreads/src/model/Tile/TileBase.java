@@ -2,10 +2,6 @@ package model.Tile;
 
 import model.Vehicle;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Random;
 
@@ -16,7 +12,6 @@ public abstract class TileBase {
     protected String currentImagePath;
     protected int posX;
     protected int posY;
-    protected JLabel tileLabel;
 
     public int getPosX() {
         return posX;
@@ -34,20 +29,6 @@ public abstract class TileBase {
         this.posY = posY;
     }
 
-    public JLabel getTileLabel() {
-        return tileLabel;
-    }
-
-    public void setTileLabel(JLabel tileLabel) {
-        this.tileLabel = tileLabel;
-        this.tileLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                paintPath();
-            }
-        });
-    }
-
     public boolean isCrossing() {
         return this.directions.size() > 1;
     }
@@ -63,10 +44,8 @@ public abstract class TileBase {
 
     protected int generateRandomCooldown(int minMs, int maxMs) {
         Random random = new Random();
-        int minTime = minMs;
-        int maxTime = maxMs;
 
-        int randomTime = random.nextInt((maxTime - minTime) + 1) + minTime;
+        int randomTime = random.nextInt((maxMs - minMs) + 1) + minMs;
 
         return randomTime;
     }
@@ -76,12 +55,12 @@ public abstract class TileBase {
     }
 
     public void setTileCurrentImage() {
-        if (this.vehicle == null) {
-            this.currentImagePath = this.getImagePath();
-        }
-
         if (this.vehicle != null) {
             this.currentImagePath = this.vehicle.getImagePath();
+        }
+
+        if (this.vehicle == null) {
+            this.currentImagePath = this.getImagePath();
         }
     }
 
@@ -140,46 +119,6 @@ public abstract class TileBase {
             }
         }
         return false;
-    }
-
-    // REMOVE LATER
-    private void paintPath() {
-        if (this.vehicle != null) {
-            Color color = getRandomColor();
-            for (TileBase tile : this.vehicle.getPath()) {
-                JLabel label = tile.getTileLabel();
-                label.setBackground(color);
-            }
-        }
-    }
-
-    // REMOVE LATER
-    private static Color getRandomColor() {
-        Random random = new Random();
-        int red = random.nextInt(256);
-        int green = random.nextInt(256);
-        int blue = random.nextInt(256);
-        return new Color(red, green, blue);
-    }
-
-    // REMOVE LATER
-    public static String formatThreadString(String input) {
-        String regex = "Thread-(\\d+)";
-
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-        java.util.regex.Matcher matcher = pattern.matcher(input);
-
-        if (matcher.find()) {
-            String dynamicNumber = matcher.group(1);
-            return dynamicNumber;
-        } else {
-            return input;
-        }
-    }
-
-
-    public boolean isAvaliable() {
-        return this.vehicle == null;
     }
 
     public List<String> getDirections() {
