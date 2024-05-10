@@ -13,6 +13,10 @@ public class TileSemaphoreImpl extends TileBase {
 
     @Override
     public boolean tryAcquire() {
+        if (super.vehicle != null) {
+            return false;
+        }
+
         boolean acquired = false;
 
         try {

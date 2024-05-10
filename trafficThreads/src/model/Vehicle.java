@@ -16,7 +16,7 @@ public class Vehicle extends Thread {
 
     public Vehicle(String imagePath, SimulationController simulationController) {
         this.imagePath = imagePath;
-        this.vehicleSpeed = generateRandomVehicleSpeed(200, 400);
+        this.vehicleSpeed = generateRandomVehicleSpeed(100, 300);
         this.simulationController = simulationController;
     }
 
@@ -50,16 +50,15 @@ public class Vehicle extends Thread {
         ArrayList<TileBase> reservedTiles = new ArrayList<>();
 
 //        TODO review if code is necessary
-//        ArrayList<TileSemaphoreImpl> tilesToReserve = (ArrayList<TileSemaphoreImpl>) crossingTiles.clone();
-//        tilesToReserve.sort(Comparator.comparing(Object::toString));
-//        for (TileBase crossingTile : crossingTiles) {
+        ArrayList<TileBase> tilesToReserve = (ArrayList<TileBase>) crossingTiles.clone();
+        tilesToReserve.sort(Comparator.comparing(Object::toString));
 
-        for (TileBase crossingTile : crossingTiles) {
+        for (TileBase crossingTile : tilesToReserve) {
             if (crossingTile.tryAcquire()) {
                 reservedTiles.add(crossingTile);
             } else {
                 this.releaseTiles(reservedTiles);
-                break;
+                return new ArrayList<TileBase>();
             }
         }
 
@@ -74,7 +73,16 @@ public class Vehicle extends Thread {
 
     protected void resolveCrossing() {
         this.sleepVehicle();
+        TileBase currentTileBeforeCrossing = this.currentTile;
+
         ArrayList<TileBase> crossingTiles = this.findCrossingTiles();
+
+        if (!crossingTiles.isEmpty()) {
+            if (!crossingTiles.get(crossingTiles.size() - 1).isEmpty()) {
+                return;
+            }
+        }
+
         ArrayList<TileBase> reservedCrossings = this.reserveCrossingTiles(crossingTiles);
 
         if (reservedCrossings.size() == crossingTiles.size()) {
@@ -83,13 +91,16 @@ public class Vehicle extends Thread {
             for (int i = 0; i <= crossingTilesNumber; i++) {
                 TileBase tile = reservedCrossings.get(i);
                 this.path.remove(tile);
-                this.moveVehicle(tile, false, i == crossingTilesNumber);
+                this.moveVehicle(tile, false);
+
+                if (i == 0) {
+                    currentTileBeforeCrossing.release();
+                }
             }
         }
 
 //        TODO review if code is necessary
-//        reservedCrossings.remove(reservedCrossings.size() - 1);
-//        releaseTiles(reservedCrossings);
+        this.releaseTiles(reservedCrossings);
     }
 
 
@@ -101,7 +112,7 @@ public class Vehicle extends Thread {
         }
     }
 
-    protected void moveVehicle(TileBase tileToMove, boolean shouldReserve, boolean isLastReservedTile) {
+    protected void moveVehicle(TileBase tileToMove, boolean shouldReserve) {
         boolean moved = false;
 
         do {
@@ -128,12 +139,9 @@ public class Vehicle extends Thread {
                     if (shouldReserve) {
                         previousTile.release();
                     }
-
-                    if (!shouldReserve && !isLastReservedTile) {
-                        previousTile.release();
-                    }
                 }
 
+                this.sleepVehicle();
                 this.currentTile = tileToMove;
                 this.simulationController.updateUI(tileToMove);
                 moved = true;
@@ -141,9 +149,15 @@ public class Vehicle extends Thread {
         } while (!moved);
     }
 
+    public void endVehicle() {
+        this.ended = true;
+        this.stop();
+        this.interrupt();
+    }
+
     @Override
     public void run() {
-        while(!ended) {
+        while (!ended) {
             while (!path.isEmpty()) {
                 int nextRoadIndex = 0;
 
@@ -151,7 +165,7 @@ public class Vehicle extends Thread {
                     resolveCrossing();
                 } else {
                     TileBase road = this.path.remove(nextRoadIndex);
-                    this.moveVehicle(road, true, false);
+                    this.moveVehicle(road, true);
                 }
             }
 
@@ -177,6 +191,7 @@ public class Vehicle extends Thread {
     public String getImagePath() {
         return imagePath;
     }
+
 
     protected ArrayList<TileBase> generateTilePath(TileBase[][] tileMap) {
         ArrayList<TileBase> pathTiles = new ArrayList<>();
@@ -206,7 +221,8 @@ public class Vehicle extends Thread {
             String chosenDirection = filteredDirections.get(new Random().nextInt(filteredDirections.size()));
 
             recentTiles.addFirst(entryTile);
-            if (recentTiles.size() > 4) {
+
+            if (recentTiles.size() > 5) {
                 recentTiles.removeLast();
             }
 
@@ -286,11 +302,5 @@ public class Vehicle extends Thread {
         }
 
         return entryTiles;
-    }
-
-    public void endVehicle() {
-        this.ended = true;
-        this.stop();
-        this.interrupt();
     }
 }
