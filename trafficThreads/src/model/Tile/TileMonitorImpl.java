@@ -11,8 +11,8 @@ public class TileMonitorImpl extends TileBase {
 
     @Override
     public boolean tryAcquire() {
-        try{
-            return this.monitor.tryLock(500, TimeUnit.MILLISECONDS);
+        try {
+            return this.monitor.tryLock(generateRandomCooldown(1000, 2000), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.out.println(e.getStackTrace());
             return false;
