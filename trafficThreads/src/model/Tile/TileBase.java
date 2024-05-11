@@ -2,6 +2,7 @@ package model.Tile;
 
 import model.Vehicle;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -66,7 +67,7 @@ public abstract class TileBase {
 
     public abstract boolean tryAcquire();
 
-    public abstract void release();
+    public abstract void release() throws IOException;
 
     public void addVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;

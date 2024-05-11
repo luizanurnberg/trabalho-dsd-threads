@@ -4,25 +4,26 @@ import model.Vehicle;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class TileSocketImpl extends TileBase {
     private int serverPort;
-    private Socket socket;
+    private Socket client;
 
-    public TileSocketImpl(int serverPort) {
-        this.serverPort = serverPort;
-        this.startServer(this.serverPort);
+    public TileSocketImpl(int port) {
+        this.startServer(port);
     }
 
     public void startServer(int port) {
-        this.serverPort = port + 8095;
+        this.setServerPort(8000 + port);
+        int portNumber = this.getServerPort();
         try {
-            ServerSocket serverSocket = new ServerSocket(serverPort);
+            ServerSocket serverSocket = new ServerSocket(portNumber);
             new Thread(() -> {
-                while (!serverSocket.isClosed()) {
+                while (true) {
                     try {
-                        Socket clientSocket = serverSocket.accept();
+                        serverSocket.accept();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -36,23 +37,35 @@ public class TileSocketImpl extends TileBase {
     @Override
     public boolean tryAcquire() {
         try {
-            this.socket = new Socket("localhost", serverPort);
-            return socket.isConnected();
+            this.client = new Socket();
+            int portNumber = this.getServerPort();
+            this.client.connect(new InetSocketAddress("localhost", portNumber));
+            if (this.client.isConnected()) {
+                return true;
+            }
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
-            return false; // Retorna false se ocorrer algum erro na conexão
+            return false;
         }
     }
 
     @Override
-    public void release() {
-        try {
-            this.socket.close();
-        } catch (Exception error) {
-        }
+    public void release() throws IOException {
+        this.client.close();
     }
 
     @Override
     public void addVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+        this.setTileCurrentImage();
+    }
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public int getServerPort() {
+        return this.serverPort;
     }
 }

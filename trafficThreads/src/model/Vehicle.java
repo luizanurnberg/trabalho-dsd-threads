@@ -3,6 +3,7 @@ package model;
 import controller.SimulationController;
 import model.Tile.TileBase;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Vehicle extends Thread {
@@ -46,7 +47,7 @@ public class Vehicle extends Thread {
         return crossingTiles;
     }
 
-    protected ArrayList<TileBase> reserveCrossingTiles(ArrayList<TileBase> crossingTiles) {
+    protected ArrayList<TileBase> reserveCrossingTiles(ArrayList<TileBase> crossingTiles) throws IOException {
         ArrayList<TileBase> reservedTiles = new ArrayList<>();
 
 //        TODO review if code is necessary
@@ -65,13 +66,13 @@ public class Vehicle extends Thread {
         return crossingTiles;
     }
 
-    private void releaseTiles(ArrayList<TileBase> tilesToRelease) {
+    private void releaseTiles(ArrayList<TileBase> tilesToRelease) throws IOException {
         for (TileBase tile : tilesToRelease) {
             tile.release();
         }
     }
 
-    protected void resolveCrossing() {
+    protected void resolveCrossing() throws IOException {
         this.sleepVehicle();
         TileBase currentTileBeforeCrossing = this.currentTile;
 
@@ -112,7 +113,7 @@ public class Vehicle extends Thread {
         }
     }
 
-    protected void moveVehicle(TileBase tileToMove, boolean shouldReserve) {
+    protected void moveVehicle(TileBase tileToMove, boolean shouldReserve) throws IOException {
         boolean moved = false;
 
         do {
@@ -162,16 +163,28 @@ public class Vehicle extends Thread {
                 int nextRoadIndex = 0;
 
                 if (path.get(nextRoadIndex).isCrossing()) {
-                    resolveCrossing();
+                    try {
+                        resolveCrossing();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else {
                     TileBase road = this.path.remove(nextRoadIndex);
-                    this.moveVehicle(road, true);
+                    try {
+                        this.moveVehicle(road, true);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
             this.currentTile.removeVehicle();
             this.simulationController.updateUI(this.currentTile);
-            this.currentTile.release();
+            try {
+                this.currentTile.release();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
             System.out.println("Vehicle finished path: " + this.getName());
             this.endVehicle();

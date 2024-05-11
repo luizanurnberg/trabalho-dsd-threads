@@ -157,7 +157,6 @@ public class SimulationController {
     }
 
     private TileBase createTile(String meshValue, int posX, int posY, ExclusionType exclusionType, int port) {
-        int serverPort = 8080 + port;
 
         TileBase tile = null;
 
@@ -169,7 +168,7 @@ public class SimulationController {
                 tile = new TileSemaphoreImpl();
                 break;
             case SOCKTES:
-                tile = new TileSocketImpl(serverPort);
+                tile = new TileSocketImpl(port);
                 break;
         }
 
