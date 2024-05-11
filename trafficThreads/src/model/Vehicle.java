@@ -50,7 +50,6 @@ public class Vehicle extends Thread {
     protected ArrayList<TileBase> reserveCrossingTiles(ArrayList<TileBase> crossingTiles) throws IOException {
         ArrayList<TileBase> reservedTiles = new ArrayList<>();
 
-//        TODO review if code is necessary
         ArrayList<TileBase> tilesToReserve = (ArrayList<TileBase>) crossingTiles.clone();
         tilesToReserve.sort(Comparator.comparing(Object::toString));
 

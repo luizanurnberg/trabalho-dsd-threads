@@ -41,6 +41,7 @@ public class TileSocketImpl extends TileBase {
             int portNumber = this.getServerPort();
             this.client.connect(new InetSocketAddress("localhost", portNumber));
             if (this.client.isConnected()) {
+                System.out.println("Vehicle moved to tile");
                 return true;
             }
             return false;

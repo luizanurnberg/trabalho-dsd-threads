@@ -1,0 +1,256 @@
+@startuml diagram
+!theme reddress-lightred
+top to bottom direction
+skinparam linetype ortho
+
+enum ExclusionType << enumeration >> {
+  - ExclusionType(int): 
+  + MONITOR: 
+  + SEMAPHORE: 
+  - value: int
+  + SOCKTES: 
+  + values(): ExclusionType[]
+  + valueOf(String): ExclusionType
+}
+enum GridType << enumeration >> {
+  - GridType(int, String): 
+  + MESH_ONE: 
+  + MESH_TWO: 
+  - value: int
+  + MESH_THREE: 
+  - imagePath: String
+  + valueOf(String): GridType
+  + getImagePath(int): String?
+  + getValue(): int
+  + getImagePath(): String
+  + getByValue(int): TerrainType?
+  + values(): GridType[]
+}
+class Main {
+  + Main(): 
+  + main(String[]): void
+}
+class Menu {
+  + Menu(): 
+  - tfNumberSimultaneousVehicles: JTextField
+  - lbGrid: JLabel
+  - rbGrid1: JRadioButton
+  - tfRangeInsertion: JTextField
+  - rbGrid2: JRadioButton
+  - lbMutualExclusion: JLabel
+  - lbNumberVehicles: JLabel
+  - tfNumberVehicles: JTextField
+  - gridGroup: ButtonGroup
+  - lbNumberSimultaneousVehicles: JLabel
+  - rbGrid3: JRadioButton
+  - rbMonitor: JRadioButton
+  - rbSemaphore: JRadioButton
+  - lbMenu: JLabel
+  - jpPainel: JPanel
+  - lbRangeInsertion: JLabel
+  - btnStart: JButton
+  - exclusionTypeGroup: ButtonGroup
+  - rbMessageExchange: JRadioButton
+  - validateInputs(): boolean
+  - onPressStartHandler(): void
+  + getExclusionType(): ExclusionType
+  + getNumberVehicles(): int
+  + getRangeInsertion(): int
+  + getSelectedGrid(): GridType
+  + getNumberSimultaneousVehicles(): int
+}
+class Simulation {
+  + Simulation(TileBase[][], SimulationParams, SimulationController): 
+  - jpMeshContainer: JPanel
+  - jContainerPanel: JPanel
+  - vehiclesRemainingText: JLabel
+  - vehiclesRemainingLabel: JLabel
+  - btnFinish: JButton
+  - tilesGrid: TileBase[][]
+  - vehiclesRunningLabel: JLabel
+  - tbTileMap: JTable
+  - simulationController: SimulationController
+  - simulationParams: SimulationParams
+  - vehiclesRunningText: JLabel
+  + setTbTileMap(JTable): void
+  + initializeSimulationFrame(): void
+  + setSimulationParams(SimulationParams): void
+  + setjContainerPanel(JPanel): void
+  + setJpMeshContainer(JPanel): void
+  + setVehiclesRemainingText(JLabel): void
+  + getTbTileMap(): JTable
+  + getVehiclesRunningLabel(): JLabel
+  + getSimulationParams(): SimulationParams
+  + getTilesGrid(): TileBase[][]
+  + setBtnFinish(JButton): void
+  + setVehiclesRunningLabel(String): void
+  + setVehiclesRunningLabel(JLabel): void
+  - meshTableRender(): void
+  + getBtnFinish(): JButton
+  + setVehiclesRemainingLabel(JLabel): void
+  + setTilesGrid(TileBase[][]): void
+  + getVehiclesRemainingText(): JLabel
+  + getVehiclesRemainingLabel(): JLabel
+  + getjContainerPanel(): JPanel
+  + setVehiclesRunningText(JLabel): void
+  + getJpMeshContainer(): JPanel
+  + getVehiclesRunningText(): JLabel
+  + setVehiclesRemainingLabel(String): void
+}
+class SimulationController {
+  + SimulationController(SimulationParams): 
+  - rangeInsertion: int
+  - simulationParams: SimulationParams
+  - VEHICLE_IMAGE_PATHS: String[]
+  - runningVehicles: List<Vehicle>
+  - simulationPanel: Simulation
+  - availableVehicles: List<Vehicle>
+  + startSimulation(): void
+  - createVehicles(int, TileBase[][]): void
+  - addVehicles(int): void
+  - createTile(String, int, int, ExclusionType, int): TileBase
+  + updateUI(TileBase): void
+  - loadTilesFromFile(GridType, ExclusionType): TileBase[][]
+  - removeFinishedVehicles(): void
+  + end(): void
+  + runVehicles(int): void
+  - getRandomVehicleImagePath(): String
+  + getSimulationPanel(): Simulation
+  + getSimulationMeshTable(): SimulationMeshTable
+}
+class SimulationMeshCell {
+  + SimulationMeshCell(): 
+  + getTableCellRendererComponent(JTable, Object, boolean, boolean, int, int): Component
+}
+class SimulationMeshTable {
+  + SimulationMeshTable(TileBase[][]): 
+  - lines: int
+  - tileMap: TileBase[][]
+  - columns: int
+  + getRowCount(): int
+  + getColumns(): int
+  + getValueAt(int, int): Object
+  + getColumnCount(): int
+  + getLines(): int
+  # getResource(String): URL
+}
+class SimulationParams {
+  + SimulationParams(GridType, ExclusionType, int, int, int): 
+  - selectedGrid: GridType
+  - rangeInsertion: int
+  - exclusionType: ExclusionType
+  - numberOfVehicles: int
+  - numberOfSimultaneousVehicles: int
+  + getNumberOfVehicles(): int
+  + getNumberOfSimultaneousVehicles(): int
+  + getExclusionType(): ExclusionType
+  + getRangeInsertion(): int
+  + getSelectedGrid(): GridType
+}
+class TileBase {
+  + TileBase(): 
+  # vehicle: Vehicle
+  # directions: List<String>
+  # imagePath: String
+  # posY: int
+  # posX: int
+  # currentImagePath: String
+  + getCurrentImagePath(): String
+  + release(): void
+  + setImagePath(String): void
+  + isEmpty(): boolean
+  + getPosY(): int
+  + setPosY(int): void
+  + getImagePath(): String
+  + setDirections(List<String>): void
+  + getPosX(): int
+  + setPosX(int): void
+  + isCrossing(): boolean
+  + getDirections(): List<String>
+  + setTileCurrentImage(String): void
+  + removeVehicle(): void
+  + tryAcquire(): boolean
+  + isEntryTile(TileBase[][]): Boolean
+  + setTileCurrentImage(): void
+  + isExitTile(TileBase[][]): Boolean
+  + addVehicle(Vehicle): void
+  # generateRandomCooldown(int, int): int
+}
+class TileMonitorImpl {
+  + TileMonitorImpl(): 
+  - monitor: Lock
+  + release(): void
+  + addVehicle(Vehicle): void
+  + tryAcquire(): boolean
+}
+class TileSemaphoreImpl {
+  + TileSemaphoreImpl(): 
+  - semaphore: Semaphore
+  + tryAcquire(): boolean
+  + release(): void
+}
+class TileSocketImpl {
+  + TileSocketImpl(int): 
+  - client: Socket
+  - serverPort: int
+  + tryAcquire(): boolean
+  + release(): void
+  + setServerPort(int): void
+  + getServerPort(): int
+  + addVehicle(Vehicle): void
+  + startServer(int): void
+}
+class Vehicle {
+  + Vehicle(String, SimulationController): 
+  # simulationController: SimulationController
+  # imagePath: String
+  # path: ArrayList<TileBase>
+  # ended: boolean
+  # vehicleSpeed: int
+  # currentTile: TileBase
+  # tileMap: TileBase[][]
+  - leadsToTile(String, TileBase, TileBase): boolean
+  + generateRandomVehicleSpeed(int, int): int
+  + getImagePath(): String
+  # resolveCrossing(): void
+  # generateTilePath(TileBase[][]): ArrayList<TileBase>
+  + run(): void
+  - findTilesByType(TileBase[][], boolean): List<TileBase>
+  + endVehicle(): void
+  + setupVehicle(TileBase[][]): void
+  - sleepVehicle(): void
+  + isVehicleStopped(): boolean
+  # reserveCrossingTiles(ArrayList<TileBase>): ArrayList<TileBase>
+  - getRandomEntryTile(TileBase[][]): TileBase
+  - findCrossingTiles(): ArrayList<TileBase>
+  # moveVehicle(TileBase, boolean): void
+  - releaseTiles(ArrayList<TileBase>): void
+}
+
+Main                  -[#595959,dashed]->  Menu
+Menu                  -[#595959,dashed]->  SimulationController
+Menu                  -[#595959,dashed]->  SimulationParams
+Simulation           "1" *-[#595959,plain]-> SimulationController 
+Simulation            -[#595959,dashed]->  SimulationMeshCell
+Simulation            -[#595959,dashed]->  SimulationMeshTable
+Simulation           "1" *-[#595959,plain]-> SimulationParams     
+Simulation           "1" *-[#595959,plain]-> TileBase             
+SimulationController  -[#595959,dashed]->  Simulation
+SimulationController "1" *-[#595959,plain]-> Simulation           
+SimulationController "1" *-[#595959,plain]-> SimulationParams     
+SimulationController  -[#595959,dashed]->  TileBase
+SimulationController  -[#595959,dashed]->  TileMonitorImpl
+SimulationController  -[#595959,dashed]->  TileSemaphoreImpl
+SimulationController  -[#595959,dashed]->  TileSocketImpl
+SimulationController  -[#595959,dashed]->  Vehicle
+SimulationController "1" *-[#595959,plain]-> Vehicle              
+SimulationMeshTable  "1" *-[#595959,plain]-> TileBase             
+SimulationParams     "1" *-[#595959,plain]->  ExclusionType        
+SimulationParams     "1" *-[#595959,plain]->  GridType             
+TileBase             "1" *-[#595959,plain]->  Vehicle              
+TileMonitorImpl       -[#000082,plain]-^  TileBase             
+TileSemaphoreImpl     -[#000082,plain]-^  TileBase             
+TileSocketImpl        -[#000082,plain]-^  TileBase             
+Vehicle              "1" *-[#595959,plain]->  SimulationController 
+Vehicle              "1" *-[#595959,plain]->  TileBase
+@enduml
