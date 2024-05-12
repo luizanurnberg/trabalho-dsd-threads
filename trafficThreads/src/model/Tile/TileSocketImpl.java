@@ -10,6 +10,8 @@ import java.net.Socket;
 public class TileSocketImpl extends TileBase {
     private int serverPort;
     private Socket client;
+    private ServerSocket serverSocket;
+    private Thread socketThread;
 
     public TileSocketImpl(int port) {
         this.startServer(port);
@@ -19,24 +21,26 @@ public class TileSocketImpl extends TileBase {
         this.setServerPort(8000 + port);
         int portNumber = this.getServerPort();
         try {
-            ServerSocket serverSocket = new ServerSocket(portNumber);
-            new Thread(() -> {
-                while (true) {
+            this.serverSocket = new ServerSocket(portNumber);
+            this.socketThread = new Thread(() -> {
+                while (!this.serverSocket.isClosed()) {
                     try {
                         serverSocket.accept();
                     } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
-            }).start();
-        } catch (IOException e) {
-            e.printStackTrace();
+            });
+            this.socketThread.start();
+        } catch (Exception e) {
         }
     }
 
     @Override
     public boolean tryAcquire() {
         try {
+            if (!this.socketThread.isAlive() || (this.serverSocket == null && this.serverSocket.isClosed())) {
+                return false;
+            }
             this.client = new Socket();
             int portNumber = this.getServerPort();
             this.client.connect(new InetSocketAddress("localhost", portNumber));
@@ -60,6 +64,18 @@ public class TileSocketImpl extends TileBase {
     public void addVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
         this.setTileCurrentImage();
+    }
+
+    public void closeSocketServer() throws IOException {
+        this.socketThread.stop();
+        this.socketThread.interrupt();
+
+        if (this.client != null) {
+            this.client.close();
+        }
+        if (!this.serverSocket.isClosed()) {
+            this.serverSocket.close();
+        }
     }
 
     public void setServerPort(int serverPort) {

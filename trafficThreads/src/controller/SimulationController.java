@@ -35,6 +35,7 @@ public class SimulationController {
     private List<Vehicle> availableVehicles;
     private Simulation simulationPanel;
     private SimulationParams simulationParams;
+    private TileBase[][] tilesGrid;
 
     private int rangeInsertion;
 
@@ -54,7 +55,7 @@ public class SimulationController {
         try {
             this.rangeInsertion = simulationParams.getRangeInsertion();
 
-            TileBase[][] tilesGrid = loadTilesFromFile(simulationParams.getSelectedGrid(), simulationParams.getExclusionType());
+            this.tilesGrid = loadTilesFromFile(simulationParams.getSelectedGrid(), simulationParams.getExclusionType());
 
             simulationPanel = new Simulation(tilesGrid, simulationParams, this);
             simulationPanel.initializeSimulationFrame();
@@ -184,7 +185,7 @@ public class SimulationController {
         return tile;
     }
 
-    public void end() {
+    public void end() throws IOException {
         for (Vehicle vehicle : runningVehicles) {
             vehicle.endVehicle();
         }
@@ -194,5 +195,13 @@ public class SimulationController {
 
         runningVehicles.clear();
         availableVehicles.clear();
+
+        if(this.simulationParams.getExclusionType() == ExclusionType.SOCKTES) {
+            for (int y = 0; y < tilesGrid.length; y++){
+                for (int x = 0; x < tilesGrid[0].length; x++){
+                    ((TileSocketImpl) tilesGrid[y][x]).closeSocketServer();
+                }
+            }
+        }
     }
 }

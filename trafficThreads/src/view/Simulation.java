@@ -7,6 +7,7 @@ import model.Tile.TileBase;
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.io.IOException;
 
 public class Simulation extends JFrame {
     private JPanel jpMeshContainer;
@@ -88,7 +89,11 @@ public class Simulation extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
         btnFinish.addActionListener(e -> {
-            this.simulationController.end();
+            try {
+                this.simulationController.end();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             dispose();
         });
 

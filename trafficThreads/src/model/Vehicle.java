@@ -17,7 +17,7 @@ public class Vehicle extends Thread {
 
     public Vehicle(String imagePath, SimulationController simulationController) {
         this.imagePath = imagePath;
-        this.vehicleSpeed = generateRandomVehicleSpeed(100, 300);
+        this.vehicleSpeed = generateRandomVehicleSpeed(500, 800);
         this.simulationController = simulationController;
     }
 
