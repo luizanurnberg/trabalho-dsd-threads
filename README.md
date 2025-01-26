@@ -1,46 +1,45 @@
-# trabalho-dsd-threads
-Trabalho para a matéria de DSD envolvendo threads
+# work-dsd-threads  
+Project for the DSD subject involving threads
 
-Equipe: Eduardo Schork, Luíza Nurnberg e Maria Cecilia Holler
+Team: Eduardo Schork, Luíza Nurnberg, and Maria Cecilia Holler
 
-### Requisitos Funcionais
+### Functional Requirements
 
-| ID                                            | Descrição                                                                                                         |
+| ID | Description |
 |------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| RF01 | Cada veículo se move uma posição por vez, respeitando o sentido de fluxo da pista. |
-| RF02 | O veículo se movimenta uma posição por vez, respeitando o fluxo da pista. |
-| RF03 | O veículo só pode se movimentar se a posição estiver livre. |
-| RF04 | Ao se deparar com um cruzamento, o veículo escolhe aleatoriamente uma das vias de saída antes de ingressar. |
-| RF05 | O veículo verifica se todas as posições no cruzamento por onde vai passar estão totalmente livres. |
-| RF06 | O veículo não deve bloquear o cruzamento para outros veículos. |
-| RF07 | Novos veículos são inseridos nos pontos de entrada da malha. |
-| RF08 | O veículo é encerrado ao atingir um ponto de saída. |
-| RF09 | Os veículos possuem diferentes velocidades de movimentação. |
-| RF10 | O sistema deve permitir informar a quantidade máxima de veículos que estarão simultaneamente na malha. |
-| RF11 | As vias serão sempre horizontais ou verticais. |
-| RF12 | As vias possuem mão dupla. |
-| RF13 | Nas bordas só haverá vias perpendiculares. |
-| RF14 | É necessário uma visualização em interface gráfica |
-| RF15 | O sistema deve suportar três mecanismos de exclusão mútua (semáforos, monitores e troca de mensagens) |
+| RF01 | Each vehicle moves one position at a time, respecting the direction of flow of the track. |
+| RF02 | The vehicle moves one position at a time, respecting the flow of the track. |
+| RF03 | The vehicle can only move if the position is free. |
+| RF04 | When encountering an intersection, the vehicle randomly chooses one of the exit routes before entering. |
+| RF05 | The vehicle checks if all positions in the intersection it will pass through are completely free. |
+| RF06 | The vehicle must not block the intersection for other vehicles. |
+| RF07 | New vehicles are inserted at the entry points of the network. |
+| RF08 | The vehicle is terminated when it reaches an exit point. |
+| RF09 | Vehicles have different movement speeds. |
+| RF10 | The system must allow specifying the maximum number of vehicles that will be simultaneously in the network. |
+| RF11 | The tracks will always be horizontal or vertical. |
+| RF12 | The tracks are two-way. |
+| RF13 | On the edges, there will only be perpendicular tracks. |
+| RF14 | A graphical interface for visualization is required. |
+| RF15 | The system must support three mutual exclusion mechanisms (semaphores, monitors, and message passing). |
 
+### Non-Functional Requirements
 
-### Requisitos Não Funcionais
-
-| ID | Categoria        | Descrição                                                                                       |
+| ID | Category | Description |
 |--------|------------------|-------------------------------------------------------------------------------------------------|
-| RNF01 | Segurança        | Garantir que os veículos não colidam entre si na malha.                                         |
-| RNF02 | Eficiência       | O sistema deve ser eficiente, mantendo a simulação em tempo real sempre que possível.           |
-| RNF03 | Escalabilidade   | Capacidade de lidar com um grande número de veículos e uma malha de tamanho variável.           |
-| RNF04 | Robustez         | Lidar com situações inesperadas, como falhas de veículos ou falhas na malha.                    |
-                  
+| RNF01 | Security | Ensure that vehicles do not collide with each other in the network. |
+| RNF02 | Efficiency | The system must be efficient, maintaining real-time simulation whenever possible. |
+| RNF03 | Scalability | Ability to handle a large number of vehicles and a network of variable size. |
+| RNF04 | Robustness | Handle unexpected situations, such as vehicle failures or network failures. |
 
-### Regras de Negócio
+### Business Rules
 
-| Regras de Negócio                   | Descrição                                                                                       |
+| Business Rules | Description |
 |-------------------------------------|-------------------------------------------------------------------------------------------------|
-| RN01               | Os veículos devem se mover continuamente pela malha, respeitando as regras de tráfego.          |
-| RN02   | A escolha das vias de saída em cruzamentos deve ser aleatória para cada veículo.                |
-| RN03       | Garantir que as posições por onde um veículo passará em um cruzamento estejam totalmente livres. |
-| RN04       | Os veículos devem respeitar o sentido de fluxo das pistas ao se movimentarem.                    |
-| RN05       | O usuário poderá escolher se deseja semáforo, monitores ou troca de mensagens como exclusão mútua                    |
+| RN01 | Vehicles must move continuously through the network, respecting traffic rules. |
+| RN02 | The choice of exit routes at intersections must be random for each vehicle. |
+| RN03 | Ensure that the positions a vehicle will pass through at an intersection are completely free. |
+| RN04 | Vehicles must respect the flow direction of the tracks as they move. |
+| RN05 | The user can choose whether to use semaphores, monitors, or message passing as mutual exclusion. |
 
+---
