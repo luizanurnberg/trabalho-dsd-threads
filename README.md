@@ -1,4 +1,4 @@
-# work-dsd-threads  
+# Threads  
 Project for the DSD subject involving threads
 
 Team: Eduardo Schork, Luíza Nurnberg, and Maria Cecilia Holler
